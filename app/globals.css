@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+body{
+  background: #0A0D21;
+  color: #FFFFFF;
+}
+
 .login-background {
   background: rgb(8, 23, 101);
   background: radial-gradient(

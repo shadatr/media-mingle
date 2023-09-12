@@ -17,8 +17,10 @@ const LoginPage = () => {
       password,
       redirect: false,
     });
+    console.log(result)
 
-    if (!result?.error) {
+    if (result?.error == "CredentialsSignin" 
+    || !result?.error) {
       router.push('/'); 
       
     } 

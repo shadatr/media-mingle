@@ -13,7 +13,6 @@ export async function POST(request: Request) {
 
   try {
     const res=await supabase.from("tb_users").insert([data]);
-    console.log(res);
 
     return new Response(
       JSON.stringify({ message: "Account created successfully" }),
