@@ -36,7 +36,7 @@ const SearshBar = () => {
   };
 
   return (
-    <div className="flex  justify-center items-start w-[100%] m-5">
+    <div className="flex  justify-center items-start w-[100%] m-5 sm:text-xsm lg:text-sm">
       <div className="flex flex-col">
         <input
           placeholder="search for a user..."
@@ -44,12 +44,12 @@ const SearshBar = () => {
           onChange={(e) => {
             search(), setShowResults(true);
           }}
-          className="bg-blue2 border border-gray3 rounded-[20px] px-4 py-3 w-[700px] outline-none"
+          className="bg-blue2 border border-gray3 rounded-[20px] lg:px-4 lg:py-3 sm:px-3 sm:py-1 lg:w-[700px] sm:w-[270px] outline-none"
         />
         {foundUsers.length > 0 && showResults && (
-          <div className="border  border-gray3 rounded-[20px] ">
+          <div className="border  border-gray3 rounded-[20px] fixed bg-blue3 lg:w-[700px] sm:w-[270px] sm:mt-8 lg:mt-12">
             {foundUsers.map((user) => (
-              <Link href={`/user/user-profile/${user.id}`} className="flex items-center m-2  mx-5 hover:bg-primary hover:rounded-[20px] p-3">
+              <Link href={`/user/user-profile/${user.id}`} className="flex items-center m-2 lg:mx-5 hover:bg-primary hover:rounded-[20px] lg:p-3 sm:p-1">
                 <p className="w-10">
                   {user?.profile_picture ? (
                     user?.profile_picture

@@ -12,7 +12,7 @@ const UploadImage = () => {
       try {
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('post_id', '2'); // Add the post ID here
+        formData.append('post_id', '2'); 
 
         const response = await axios.post('/api/posting', formData);
 

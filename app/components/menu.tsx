@@ -1,64 +1,137 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import ReactDOM from "react-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBars,
+  faTimes,
+  faCogs,
+  faTable,
+  faList,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { BsPersonCircle } from "react-icons/bs";
-import { AiOutlineLogout } from "react-icons/ai";
+import { AiFillSetting, AiOutlineLogout } from "react-icons/ai";
+import "./styles.css";
+import { AiFillHome, AiFillMessage } from "react-icons/ai";
+import { BsFillPersonFill } from "react-icons/bs";
+import { RiNotificationFill } from "react-icons/ri";
 
-function Menu() {
+export default function App() {
   const session = useSession({ required: true });
   const user = session.data?.user;
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleTrigger = () => setIsOpen(!isOpen);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsOpen(window.innerWidth > 1000);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
-      <div className="flex flex-row ml-8">
-        <div>
-          <p className=" text-xlg font-bold inline-block p-8">MediaMingle</p>
-          <span className="flex items-center px-8 pb-8">
-            <p className="w-20">
-              {user?.profile_picture ? (
-                user?.profile_picture
-              ) : (
-                <BsPersonCircle size="60" />
-              )}
-            </p>
-            <span>
-              <h1 className="text-md font-bold">{user?.name}</h1>
-              <h1>{user?.username}</h1>
-            </span>
-          </span>
-          <Link
-            href={"/user/post"}
-            className="bg-blue1 px-10 py-3 rounded-[20px] font-bold text-lg menu-list mx-8"
-          >
-            Post
-          </Link>
-          <div className="flex flex-col text-lg font-bold px-6 py-8">
-            <Link className="p-2 hover:bg-primary hover:rounded-[20px]" href={"/user/home"}>
-              Home
-            </Link>
-            <Link className="p-2 hover:bg-primary hover:rounded-[20px]" href={"/user/personal-profile"}>
-              Personal Profile
-            </Link>
-            <Link className="p-2 hover:bg-primary hover:rounded-[20px]" href={"/user/messages"}>
-              Messages
-            </Link>
-            <Link className="p-2 hover:bg-primary hover:rounded-[20px]" href={"/user/notifications"}>
-              Notifications
-            </Link>
-            <Link className="p-2 hover:bg-primary hover:rounded-[20px]" href={"/user/sittings"}>
-              Sittings
-            </Link>
+    <div className="App ">
+      <div className="page">
+        <div
+          className={`lg:pl-10 lg:text-lg sm:text-md font-bold sm:pl-2 sidebar ${
+            isOpen ? "sidebar--open" : ""
+          }`}
+        >
+          <div className={`lg:hidden`}>
+            <div className="trigger " onClick={handleTrigger}>
+              <FontAwesomeIcon icon={isOpen ? faTimes : faBars} />
+            </div>
           </div>
-          <button
-            onClick={() => signOut({ redirect: true })}
-            className="flex items-center font-bold text-lg m-8 mt-20  hover:text-red-500"
-          >
-            <p>Logout</p>
-            <AiOutlineLogout size="28" className="mt-3 m-1 cursor-pointer" />
+
+          <div className="flex flex-col items-center sidebar-position">
+            <span className=" lg:text-xlg sm:text-lg font-bold ">
+              MediaMingle
+            </span>
+            <span>
+              <div className="flex m-5">
+                <p className="w-20">
+                  {user?.profile_picture ? (
+                    user?.profile_picture
+                  ) : (
+                    <BsPersonCircle size="60" />
+                  )}
+                </p>
+                <p>
+                  <h1 className="text-md font-bold">{user?.name}</h1>
+                  <h2 className="text-sm">{user?.username}</h2>
+                </p>
+              </div>
+            </span>
+            <span>
+              <Link
+                href={"/user/posting"}
+                className="bg-blue1 px-10 py-3 rounded-[20px] font-bold text-lg menu-list h-[100px] m-10 "
+              >
+                Post
+              </Link>
+            </span>
+          </div>
+              <Link
+                className="hover:bg-primary hover:rounded-[20px] sidebar-position"
+                href={"/user/home"}
+              >
+            <AiFillHome />
+            <span>
+                Home
+            </span>
+              </Link>
+              <Link
+                className=" hover:bg-primary hover:rounded-[20px] sidebar-position"
+                href={"/user/personal-profile"}
+              >
+            <BsFillPersonFill />
+            <span>
+                Personal Profile
+            </span>
+              </Link>
+              <Link
+                className=" hover:bg-primary hover:rounded-[20px] sidebar-position"
+                href={"/user/messages"}
+              >
+            <AiFillMessage />
+            <span>
+                Messages
+            </span>
+              </Link>
+              <Link
+                className="hover:bg-primary hover:rounded-[20px] sidebar-position"
+                href={"/user/notifications"}
+              >
+            <RiNotificationFill />
+            <span>
+                Notifications
+            </span>
+              </Link>
+          <Link href={"/user/sittings"} className="sidebar-position  hover:bg-primary hover:rounded-[20px]">
+            <AiFillSetting />
+            <span>
+                Sittings
+            </span>
+          </Link>
+          <button  className="sidebar-position  hover:bg-primary hover:rounded-[20px] lg:mt-10" onClick={() => signOut({ redirect: true })}>
+            <AiOutlineLogout size="28" className=" cursor-pointer" />
+            <span>
+            Logout
+            </span>
           </button>
         </div>
-        <div className="border-r-[0.5px] border-gray3 h-screen"></div>
+      </div>
     </div>
   );
 }
-
-export default Menu;
