@@ -36,7 +36,7 @@ const SearshBar = () => {
   };
 
   return (
-    <div className="flex  justify-center items-start w-[100%] m-5 sm:text-xsm lg:text-sm">
+    <div className="flex justify-center items-start w-[100%] m-5 sm:text-xsm lg:text-sm">
       <div className="flex flex-col">
         <input
           placeholder="search for a user..."

@@ -1,4 +1,5 @@
 import { Database } from "@/app/types/supabase";
+import { SinglePostType } from "@/app/types/types";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient<Database>(
@@ -11,25 +12,42 @@ export const dynamic = "force-dynamic";
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
-    const imageFile = formData.get('file');
-    const post_id = formData.get('post_id'); 
+    const user_id = formData.get("user_id");
+    const text = formData.get("text");
 
-    if (!imageFile) {
-      throw new Error('No file uploaded');
-    }
+    if (user_id) {
+      const postData = await supabase.from("tb_posts").insert([
+        {
+          text: text?.toString(),
+          user_id: parseInt(user_id.toString()),
+        },
+      ]).select()
 
-    const objectName = `images/${post_id}`;
-
-    const res = await supabase.storage
-      .from('comments') 
-      .upload(objectName, imageFile)
-
-    return new Response(
-      JSON.stringify({ message: "Successfully uploaded" }),
-      {
-        headers: { "content-type": "application/json" },
+      if (postData.error) {
+        throw postData;
       }
-    );
+      if (postData ) {
+        const entriesArray = Array.from(formData.entries());
+
+        for (const [key, imageFile] of entriesArray) {
+          if (key.startsWith("file")) {
+            const objectName = `${postData.data[0].id}-${key}`; 
+            const uploadRes = await supabase.storage
+              .from("posts")
+              .upload(objectName, imageFile);
+            console.log(uploadRes);
+          }
+        }
+        console.log("true");
+      }
+
+      return new Response(
+        JSON.stringify({ message: "Successfully uploaded" }),
+        {
+          headers: { "content-type": "application/json" },
+        }
+      );
+    }
   } catch (error) {
     return new Response(
       JSON.stringify({ message: "There is a problem", error: error }),

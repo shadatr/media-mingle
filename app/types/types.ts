@@ -27,3 +27,9 @@ export type PostType = {
     user_id: number | null;
   }[];
 };
+
+export type SinglePostType = {
+  id: number;
+  text: string | null;
+  user_id: number | null;
+};
