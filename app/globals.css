@@ -76,4 +76,13 @@ body{
   }
 }
 
+.react-hot-toast-toast {
+  background-color: #ff5733; /* Your desired background color */
+}
+
+/* Change the text color */
+.react-hot-toast-content {
+  color: #ffffff; /* Your desired text color */
+}
+
 

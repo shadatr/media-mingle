@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { BsPersonCircle } from "react-icons/bs";
 import { TiDelete } from "react-icons/ti";
 import LoadingIcons from "react-loading-icons";
+import { toast } from "react-hot-toast";
 
 const UploadImage = () => {
   const session = useSession({ required: true });
@@ -35,10 +36,14 @@ const UploadImage = () => {
     });
 
     try {
-      axios.post("/api/posting", formData).then(() => setLoading(false));
+      axios.post("/api/posting", formData).then(()=>  setLoading(false))
+      toast.success('Successfully posted!')
     } catch (error) {
-      console.error("Error posting post:", error);
+      console.error("Error posting post:", error)
+      setLoading(false)
+      toast.error('error happend while posting the post!')
     }
+   
   };
 
   const handleDelete = (name: string) => {
@@ -46,11 +51,13 @@ const UploadImage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center w-[120%] flex-col">
+    <div className="flex items-center justify-center lg:w-[120%] sm:w-[100%] flex-col lg:text-sm sm:text-xsm">
       {loading ? (
-        <LoadingIcons.ThreeDots stroke="blue" />
+        <div className="items-center justify-cente flex h-[100%] mt-[200px]">
+          <LoadingIcons.TailSpin stroke="white" width='100' height='100' speed={.8}  />
+        </div>
       ) : (
-        <div className=" w-[800px] ">
+        <div className=" lg:w-[800px] sm:w-[300px] ">
           <span>
             <div className="flex m-5">
               <p className="w-16">
@@ -68,7 +75,7 @@ const UploadImage = () => {
           </span>
           <div className="bg-primary w-full rounded-[20px] p-8">
             <textarea
-              className="bg-primary w-full outline-none h-[300px]"
+              className="bg-primary w-full outline-none lg:h-[300px] sm:h-[150px]"
               placeholder="write your post here..."
               onChange={(e) => setPostText(e.target.value)}
             />
@@ -93,10 +100,9 @@ const UploadImage = () => {
                 ))}
               </div>
             )}
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center m-4">
               {selectedImage.length < 4 ? (
                 <>
-                  {" "}
                   <label htmlFor="fileInput">
                     <AiOutlinePicture size="30" className="cursor-pointer " />
                   </label>
@@ -117,7 +123,7 @@ const UploadImage = () => {
                 />
               )}
               <span
-                className="bg-blue1 px-10 py-3 rounded-[20px] font-bold cursor-pointer"
+                className="bg-blue1 lg:px-10 lg:py-3 sm:px-5 sm:py-1 rounded-[20px] font-bold cursor-pointer"
                 onClick={handelPost}
               >
                 Post
