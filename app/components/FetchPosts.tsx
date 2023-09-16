@@ -1,8 +1,9 @@
+'use client'
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { PostType } from "@/app/types/types";
 
-export default function FetchPosts({ id }: { id: number }) {
+export function FetchPosts({ id }: { id: string }) {
   const [post, setPost] = useState<PostType>();
 
 
@@ -15,7 +16,6 @@ export default function FetchPosts({ id }: { id: number }) {
         );
         const data: PostType = response.data.message;
         setPost(data)
-        console.log(data)
 
       } catch (error) {
         console.log("Error downloading data: ", error);

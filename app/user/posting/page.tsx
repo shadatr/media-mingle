@@ -38,6 +38,7 @@ const UploadImage = () => {
     try {
       axios.post("/api/posting", formData).then(()=>  setLoading(false))
       toast.success('Successfully posted!')
+      setSelectedImage([])
     } catch (error) {
       console.error("Error posting post:", error)
       setLoading(false)
@@ -49,6 +50,8 @@ const UploadImage = () => {
   const handleDelete = (name: string) => {
     setSelectedImage(selectedImage.filter((pic) => pic.name != name));
   };
+
+  console.log(selectedImage)
 
   return (
     <div className="flex items-center justify-center lg:w-[120%] sm:w-[100%] flex-col lg:text-sm sm:text-xsm">
