@@ -27,7 +27,7 @@ export type PostType = {
     profile_picture: string | null;
     username: string | null;
   }[];
-  picture?: {publicUrl:string}[];
+  picture?: { publicUrl: string }[];
   likes: { id: number; post_id: number | null; user_id: number | null }[];
   comments: {
     id: number;
@@ -42,3 +42,17 @@ export type SinglePostType = {
   text: string | null;
   user_id: number | null;
 };
+
+export type CommentType = {
+  id: number;
+  post_id: number | null;
+  text: string | null;
+  user_id: number | null;
+};
+
+export type CommentLikes={
+  comment_id: number | null
+          created_at: string
+          id: number
+          user_id: number | null
+}

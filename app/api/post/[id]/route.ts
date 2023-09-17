@@ -18,6 +18,7 @@ export async function GET(
       .select("*")
       .eq("id", params.id)
       .select("*");
+
     if (data.data && data.data[0].user_id) {
       const data2 = await supabase
         .from("tb_users")
@@ -47,9 +48,7 @@ export async function GET(
       });
       
       const images = await Promise.all(downloadPromises);
-      
-      console.log(images);
-      
+            
 
       const data3 = await supabase
         .from("tb_likes")
