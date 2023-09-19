@@ -1,34 +1,121 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FetchPosts } from "./FetchPosts";
-import { BsPersonCircle } from "react-icons/bs";
+import { BsPersonCircle, BsThreeDots } from "react-icons/bs";
 import LoadingIcons from "react-loading-icons";
 import { TiDelete } from "react-icons/ti";
 import { FaRegComment } from "react-icons/fa6";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { useSession } from "next-auth/react";
-import { supabase } from "../api/supabase";
 import axios from "axios";
+import { PostType } from "../types/types";
+import { supabase } from "../api/supabase";
 
-const Post = ({ id }: { id: string }) => {
+const Post = ({ id, onPostDelete }: { id: number; onPostDelete?: () => void }) => {
   const session = useSession({ required: true });
   const sessionUser = session.data?.user;
-
+  const [isPopoverOpen, setIsPopoverOpen] = useState(true);
+  const [isPopoverOpenComment, setIsPopoverOpenComment] = useState(0);
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
-  const fetchPosts = FetchPosts({ id });
-  const user = fetchPosts?.user[0];
+  const [post, setPost] = useState<PostType | null>(null);
+  const [refresh, setRefresh] = useState(false);
+  const popoverRef = useRef<HTMLDivElement | null>(null);
+  const user = post?.user[0];
 
-  const handleLike = () => {
+  useEffect(() => {
+    async function downloadData() {
+      try {
+        const response = await axios.get(`/api/post/${id}`);
+        const data: PostType = response.data.message;
+        setPost(data);
+        console.log(data);
+      } catch (error) {
+        console.log("Error downloading data: ", error);
+      }
+    }
+
+    downloadData();
+  }, [id]);
+
+  useEffect(() => {
+  
+    const subscription2 = supabase
+      .channel("table-db-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "tb_likes",
+        },
+        (payload) => {
+          if (payload.eventType === "INSERT" && payload.new.post_id == id) {
+            setPost((prevPost: any) => {
+              if (prevPost) {
+                const newLike = payload.new;
+                const updatedLikes = [...prevPost.likes, newLike];
+                console.log(updatedLikes); // Move this inside the INSERT condition
+                return {
+                  ...prevPost,
+                  likes: updatedLikes,
+                };
+              }
+              return prevPost;
+            });
+          } else if (
+            payload.eventType === "DELETE" &&
+            payload.old.post_id == id
+          ) {
+            setPost((prevPost) => {
+              if (prevPost) {
+                const deletedLike = payload.old;
+                const updatedLikes = prevPost.likes.filter(
+                  (like) => like.id !== deletedLike.id
+                );
+                console.log(updatedLikes); // Move this inside the DELETE condition
+                return {
+                  ...prevPost,
+                  likes: updatedLikes,
+                };
+              }
+              return prevPost;
+            });
+          }
+        }
+      )
+      .subscribe();
+    return () => {
+      subscription2.unsubscribe();
+    };
+  }, [refresh]);
+
+  const togglePopover = (id: number) => {
+    setIsPopoverOpen(!isPopoverOpen);
+    setIsPopoverOpenComment(id);
+  };
+  
+  const handledelete = (id: number) => {
+    axios.delete(`/api/post/${id}`);
+    if (onPostDelete) {
+      onPostDelete()
+    }
+  };
+
+
+
+  const handleLike = (postId: number) => {
+    console.log(postId);
     const data = {
       user_id: sessionUser?.id,
-      post_id: fetchPosts?.post[0].id,
+      post_id: postId, // Use the postId parameter passed to the function
     };
     try {
-      axios.post("/api/like/1", data);
+      axios.post(`/api/like/${postId}`, data); // Use postId in the URL
     } catch (error) {
       console.error("Error posting post:", error);
     }
+    setRefresh(!refresh);
   };
 
   const handleImageClick = (imageUrl: string) => {
@@ -41,7 +128,7 @@ const Post = ({ id }: { id: string }) => {
     setModalOpen(false);
   };
 
-  if (!fetchPosts) {
+  if (!post) {
     return (
       <div className="items-center justify-center flex h-[100%] mt-[200px]">
         <LoadingIcons.TailSpin
@@ -55,23 +142,24 @@ const Post = ({ id }: { id: string }) => {
   }
 
   return (
-    <div className="w-[700px]">
-      <span>
-        <div className="flex m-5">
-          <p className="w-16">
-            {user?.profile_picture ? (
-              user.profile_picture
-            ) : (
-              <BsPersonCircle size="40" />
-            )}
-          </p>
-          <span>
-            <h1 className="text-sm font-bold">{user?.name}</h1>
-            <h2 className="text-xsm">{user?.username}</h2>
-          </span>
-        </div>
-      </span>
-      <span className="text-center">{fetchPosts.post[0].text}</span>
+    <div className="w-[700px] ">
+      <div className="flex flex-row justify-between">
+<div>
+
+      <div className="flex my-3 mx-5">
+        <p className="w-16">
+          {user?.profile_picture ? (
+            user.profile_picture
+          ) : (
+            <BsPersonCircle size="40" />
+          )}
+        </p>
+        <span>
+          <h1 className="text-sm font-bold">{user?.name}</h1>
+          <h2 className="text-xsm">{user?.username}</h2>
+        </span>
+      </div>
+      <span className="text-center mx-5">{post?.post[0].text}</span>
       {isModalOpen && (
         <div className="modal ">
           <div className="modal-content ">
@@ -89,8 +177,8 @@ const Post = ({ id }: { id: string }) => {
           </div>
         </div>
       )}
-      <span className={`grid grid-cols-2 my-5 gap-1`}>
-        {fetchPosts.picture?.map(
+      <span className={`grid grid-cols-2 my-5 gap-1 mx-5`}>
+        {post?.picture?.map(
           (fileInfo) =>
             fileInfo && (
               <img
@@ -102,31 +190,58 @@ const Post = ({ id }: { id: string }) => {
             )
         )}
       </span>
+      </div>
+      <span className="p-2 cursor-pointer">
+        <BsThreeDots
+          color="gray"
+          size="20"
+          onClick={() => togglePopover(post.post[0].id)}
+          />
+        {isPopoverOpen &&
+          post.post[0].id === isPopoverOpenComment &&
+          post.post[0].user_id == sessionUser?.id &&
+          post.post[0].user_id == user?.id && (
+            <div
+            ref={popoverRef}
+            className="absolute bg-primary rounded-md shadow-lg"
+            >
+              <button
+                className="block text-red-500 hover:text-red-700 p-2"
+                onClick={() => {
+                  handledelete(post.post[0].id);
+                  setIsPopoverOpen(false);
+                }}
+                >
+                Delete
+              </button>
+            </div>
+          )}
+      </span>
+          </div>
       <div className="w-full flex items-center justify-center flex-col">
         <div className="border-t  w-full border-gray3" />
         <span className="flex justify-between items-center w-[200px] py-1 text-md text-gray2">
-          <div className="flex flex items-center justify-center ">
-            {fetchPosts.likes.length}
-            {fetchPosts.likes.find(
-              (item) => item.user_id == sessionUser?.id
-            ) ? (
+          <div className="flex items-center">
+            {post?.likes.length}
+            {post?.likes.find((item) => item.user_id == sessionUser?.id) &&
+            post.likes.find((i) => i.post_id == id) ? (
               <AiFillHeart
                 size="20"
                 color="red"
                 className="cursor-pointer mx-1"
-                onClick={handleLike}
+                onClick={() => handleLike(id)} // Pass the correct post id here
               />
             ) : (
               <AiOutlineHeart
                 size="20"
                 color="gray"
                 className="cursor-pointer mx-1"
-                onClick={handleLike}
+                onClick={() => handleLike(id)} // Pass the correct post id here
               />
             )}
           </div>
           <div className="flex flex items-center justify-center ">
-            {fetchPosts.comments.length}
+            {post?.comments.length}
             <FaRegComment
               size="20"
               color="gray"

@@ -10,6 +10,7 @@ export type UserType = {
   private: boolean | null;
   profile_picture: string | null;
   username: string | null;
+  bio: string | null;
 };
 
 export type PostType = {
@@ -50,9 +51,37 @@ export type CommentType = {
   user_id: number | null;
 };
 
-export type CommentLikes={
-  comment_id: number | null
-          created_at: string
-          id: number
-          user_id: number | null
-}
+export type CommentLikes = {
+  comment_id: number | null;
+  created_at: string;
+  id: number;
+  user_id: number | null;
+};
+
+export type UserDataType = {
+  user: {
+    birth_date: string | null;
+    created_at: string;
+    email: string | null;
+    gender: string | null;
+    id: number;
+    joined_date: string | null;
+    name: string | null;
+    password: string | null;
+    private: boolean | null;
+    profile_picture: string | null;
+    username: string | null;
+    bio: string | null;
+  }[];
+  followers: {
+    followed_id?: number | null;
+    follower_id?: number | null;
+    id?: number;
+  }[];
+  following: {
+    followed_id?: number | null;
+    follower_id?: number | null;
+    id?: number;
+  }[];
+  posts: { id: number; text: string | null; user_id: number | null }[];
+};

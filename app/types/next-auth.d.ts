@@ -18,6 +18,7 @@ declare module "next-auth" {
           private: boolean | null
           profile_picture: string | null
           username: string | null
+          bio: string|null
     };
   }
 }

@@ -31,7 +31,6 @@ const SearshBar = () => {
     if (searchedUser.current?.value) {
       const res = await axios.get(`/api/search/${searchedUser.current?.value}`);
       setFounddUsers(res.data.message);
-      console.log(res.data.message);
     }
   };
 
@@ -47,9 +46,9 @@ const SearshBar = () => {
           className="bg-blue2 border border-gray3 rounded-[20px] lg:px-4 lg:py-3 sm:px-3 sm:py-1 lg:w-[700px] sm:w-[270px] outline-none"
         />
         {foundUsers.length > 0 && showResults && (
-          <div className="border  border-gray3 rounded-[20px] fixed bg-blue3 lg:w-[700px] sm:w-[270px] sm:mt-8 lg:mt-12">
+          <div className="border  border-gray3 rounded-[20px] fixed bg-blue3 lg:w-[700px] sm:w-[270px] sm:mt-8 lg:mt-12" ref={searchedUser}>
             {foundUsers.map((user) => (
-              <Link href={`/user/user-profile/${user.id}`} className="flex items-center m-2 lg:mx-5 hover:bg-primary hover:rounded-[20px] lg:p-3 sm:p-1">
+              <Link href={`/user/personal-profile/${user.id}`} className="flex items-center m-2 lg:mx-5 hover:bg-primary hover:rounded-[20px] lg:p-3 sm:p-1">
                 <p className="w-10">
                   {user?.profile_picture ? (
                     user?.profile_picture

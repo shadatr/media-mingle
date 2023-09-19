@@ -31,7 +31,7 @@ export async function POST(request: Request) {
 
         for (const [key, imageFile] of entriesArray) {
           if (key.startsWith("file")) {
-            const objectName = `${postData.data[0].id}-${key}`; 
+            const objectName = `images/${postData.data[0].id}-${key}`; 
             const uploadRes = await supabase.storage
               .from("posts")
               .upload(objectName, imageFile);

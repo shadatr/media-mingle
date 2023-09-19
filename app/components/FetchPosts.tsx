@@ -4,7 +4,7 @@ import axios from "axios";
 import { PostType } from "@/app/types/types";
 import { supabase } from "../api/supabase";
 
-export function FetchPosts({ id }: { id: string }) {
+export function FetchPosts({ id }: { id: number }) {
   const [post, setPost] = useState<PostType>();
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export function FetchPosts({ id }: { id: string }) {
           table: "tb_likes",
         },
         (payload) =>
-          setPost((prevPost) => {
+          setPost((prevPost:any) => {
             if (!prevPost) return prevPost;
             const updatedLikes = [...prevPost.likes];
 
@@ -71,7 +71,7 @@ export function FetchPosts({ id }: { id: string }) {
           table: "tb_comments",
         },
         (payload) =>
-          setPost((prevPost) => {
+          setPost((prevPost:any) => {
             if (!prevPost) return prevPost;
             const updatedLikes = [...prevPost.comments];
 

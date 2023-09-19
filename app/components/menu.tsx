@@ -77,7 +77,7 @@ export default function App() {
             </Link>
             <Link
               className=" hover:bg-primary hover:rounded-[20px] sidebar-position"
-              href={"/user/personal-profile"}
+              href={`/user/personal-profile/${user?.id}`}
             >
               <BsFillPersonFill />
               <span>Personal Profile</span>
@@ -157,7 +157,7 @@ export default function App() {
             </Link>
             <Link
               className=" hover:bg-primary hover:rounded-[20px] sidebar-position"
-              href={"/user/personal-profile"}
+              href={`/user/personal-profile/${user?.id}`}
             >
               <BsFillPersonFill />
               <span>Personal Profile</span>

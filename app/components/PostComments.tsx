@@ -4,29 +4,74 @@ import { FetchPosts } from "./FetchPosts";
 import { useSession } from "next-auth/react";
 import { BsPersonCircle, BsThreeDots } from "react-icons/bs";
 import axios from "axios";
-import { CommentLikes, UserType } from "../types/types";
+import { CommentLikes, PostType, UserType } from "../types/types";
 import { toast } from "react-hot-toast";
+import { supabase } from "../api/supabase";
 
-const PostComments = ({ id }: { id: string }) => {
+const PostComments = ({ id }: { id: number }) => {
   const session = useSession({ required: true });
   const user = session.data?.user;
-  const fetchPosts = FetchPosts({ id });
+  const [fetchPosts, setFetchPosts] = useState<PostType>();
   const [userComments, setUserComments] = useState<UserType[][]>([]);
   const [commentText, setCommentText] = useState("");
   const [isPopoverOpen, setIsPopoverOpen] = useState(true);
   const [isPopoverOpenComment, setIsPopoverOpenComment] = useState(0);
+  const [refresh, setRefresh] = useState(false);
   const popoverRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const fetchComments = async () => {
       const response = await axios.get(`/api/comment/${id}`);
       const data: UserType[][] = response.data.message;
-      console.log(data);
       setUserComments(data);
+
+      const response2 = await axios.get(`/api/post/${id}`);
+        const data2: PostType = response2.data.message;
+        setFetchPosts(data2);
     };
     fetchComments();
   }, []);
 
+  useEffect(() => {
+    const changes = supabase
+      .channel("table-db-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "tb_comments",
+        },
+        (payload) =>
+        setFetchPosts((prevPost:any) => {
+            if (!prevPost) return prevPost;
+            const updatedLikes = [...prevPost.comments];
+
+            if (payload.eventType === "INSERT") {
+              updatedLikes.push(payload.new);
+            } else if (payload.eventType === "DELETE") {
+              const index = updatedLikes.findIndex(
+                (like) => like.id === payload.old.id
+              );
+              if (index !== -1) {
+                updatedLikes.splice(index, 1);
+              }
+            }
+
+            return {
+              ...prevPost,
+              comments: updatedLikes,
+            };
+          })
+      )
+      .subscribe();
+
+    return () => {
+      changes.unsubscribe();
+    };
+  }, [id]);
+
+  
   const togglePopover = (id: number) => {
     setIsPopoverOpen(!isPopoverOpen);
     setIsPopoverOpenComment(id);
@@ -45,6 +90,7 @@ const PostComments = ({ id }: { id: string }) => {
       console.error("Error posting post:", error);
       toast.error("error happend while posting the comment!");
     }
+    setRefresh(!refresh)
   };
 
   if (!fetchPosts) {
@@ -53,6 +99,7 @@ const PostComments = ({ id }: { id: string }) => {
 
   const handledelete = (id: number) => {
     axios.delete(`/api/comment/${id}`);
+    setRefresh(!refresh)
   };
 
   return (
@@ -113,7 +160,7 @@ const PostComments = ({ id }: { id: string }) => {
                     size="20"
                     onClick={() => togglePopover(comment.id)}
                   />
-                  {isPopoverOpen && comment.id === isPopoverOpenComment && (
+                  {isPopoverOpen && comment.id === isPopoverOpenComment && comment.user_id==user?.id&&  fetchPosts.post[0].user_id==user?.id&& (
                     <div
                       ref={popoverRef}
                       className="absolute bg-primary rounded-md shadow-lg"

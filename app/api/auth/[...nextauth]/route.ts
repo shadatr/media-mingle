@@ -55,6 +55,8 @@ const authOptions: NextAuthOptions = {
       session.user.password = token.password as string;
       session.user.profile_picture = token.profile_picture as string;
       session.user.username = token.username as string;
+      session.user.bio = token.bio as string;
+
       return session;
     },
   },

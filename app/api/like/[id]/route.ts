@@ -10,7 +10,6 @@ export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
   const data = await request.json();
-  console.log(data);
   try {
     const res = await supabase
       .from("tb_likes")
@@ -71,10 +70,6 @@ export async function GET(
           })
       );
 
-      
-  
-      console.log(likesUsers);
-  
       return new Response(JSON.stringify({ message: likesUsers }), {
         status: 200,
         headers: { revalidate: dynamic },

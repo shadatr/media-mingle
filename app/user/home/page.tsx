@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import FetchPosts from "../../components/FetchPosts";
+import {FetchPosts} from "../../components/FetchPosts";
 
 
 const page = () => {
