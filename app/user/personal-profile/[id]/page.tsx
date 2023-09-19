@@ -4,9 +4,9 @@ import React, { useEffect } from "react";
 import { BsPersonCircle } from "react-icons/bs";
 import { FetchPersonalData } from "@/app/components/FetchPersonalData";
 import LoadingIcons from "react-loading-icons";
-import Post from "@/app/components/Post";
 import axios from "axios";
 import { supabase } from "@/app/api/supabase";
+import PostFeed from "@/app/components/PostFeed";
 
 const page = ({ params }: { params: { id: number } }) => {
   const session = useSession({ required: true });
@@ -114,7 +114,7 @@ const page = ({ params }: { params: { id: number } }) => {
           <div className="border-t w-full border-gray3 py-2" />
           {postsdata?.map((post) => {
             if (post.id) {
-              return <Post key={post.id} id={post.id} onPostDelete={()=> setRefresh(!refresh)} />;
+              return <PostFeed key={post.id} id={post.id} onPostDelete={()=> setRefresh(!refresh)} />;
             }
           })}
         </div>

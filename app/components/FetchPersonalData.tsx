@@ -20,37 +20,37 @@ export function FetchPersonalData({ id }: { id: number }) {
     }
 
     downloadData();
-  }, [id,refresh]);
-
+  }, [id, refresh]);
 
   useEffect(() => {
     const subscription = supabase
-    .channel("table-db-changes")
-    .on(
-      "postgres_changes",
-      {
-        schema: "public",
-        table: "tb_posts",
-        event: 'DELETE'
-      },
-      (payload) => {
-        setUser((prevPost:any) => {
-          const deletedPostId = payload.old.id; // Assuming id is the identifier for posts
-          const updatedPosts = prevPost?.posts.filter(
-            (post:any) => post?.id !== deletedPostId
+      .channel("table-db-changes")
+      .on(
+        "postgres_changes",
+        {
+          schema: "public",
+          table: "tb_posts",
+          event: "DELETE",
+        },
+        (payload) => {
+          setUser((prevPost: any) => {
+            const deletedPostId = payload.old.id; // Assuming id is the identifier for posts
+            const updatedPosts = prevPost?.posts.filter(
+              (post: any) => post?.id !== deletedPostId
             );
-            console.log(payload)
-              console.log(updatedPosts); // Move this inside the DELETE condition
-              console.log(deletedPostId);
-              return {
-                ...prevPost,
-                posts: updatedPosts,
-              };
+            console.log(payload);
+            console.log(updatedPosts); // Move this inside the DELETE condition
+            console.log(deletedPostId);
+            return {
+              ...prevPost,
+              posts: updatedPosts,
+            };
           });
-      }
-    )
-    .subscribe();
-    
+        }
+      )
+      .subscribe();
+      console.log(user)
+
     const changes = supabase
       .channel("table-db-changes")
       .on(
@@ -60,14 +60,19 @@ export function FetchPersonalData({ id }: { id: number }) {
           schema: "public",
           table: "tb_followers",
         },
-        (payload) =>
-        setUser((prevPost:any) => {
+        (payload) =>{
+        console.log(payload)
+          setUser((prevPost: any) => {
+            
             if (!prevPost) return prevPost;
-            const updatedFollowers = [...prevPost.following];
-
+            const updatedFollowers = [...prevPost.followers];
             if (payload.eventType === "INSERT") {
+              console.log(payload)
+
               updatedFollowers.push(payload.new);
             } else if (payload.eventType === "DELETE") {
+              console.log(payload)
+
               const index = updatedFollowers.findIndex(
                 (like) => like.id === payload.old.id
               );
@@ -78,9 +83,9 @@ export function FetchPersonalData({ id }: { id: number }) {
 
             return {
               ...prevPost,
-              following: updatedFollowers,
+              followers: updatedFollowers,
             };
-          })
+          })}
       )
       .subscribe();
 
@@ -88,8 +93,7 @@ export function FetchPersonalData({ id }: { id: number }) {
       subscription.unsubscribe();
       changes.unsubscribe();
     };
-  }, [id,refresh]);
+  }, [id, refresh]);
 
-
-  return {user,setUser,setRefresh,refresh};
+  return { user, setUser, setRefresh, refresh };
 }

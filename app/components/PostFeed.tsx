@@ -11,8 +11,9 @@ import axios from "axios";
 import { PostType } from "../types/types";
 import { supabase } from "../api/supabase";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-const Post = ({
+const PostFeed = ({
   id,
   onPostDelete,
 }: {
@@ -29,9 +30,7 @@ const Post = ({
   const [refresh, setRefresh] = useState(false);
   const popoverRef = useRef<HTMLDivElement | null>(null);
   const user = post?.user[0];
-  const router = useRouter();
-
-  console.log("Current pathname:", router);
+  
 
   useEffect(() => {
     async function downloadData() {
@@ -46,7 +45,7 @@ const Post = ({
     }
 
     downloadData();
-  }, [id]);
+  }, [id,refresh]);
 
   useEffect(() => {
     const subscription2 = supabase
@@ -122,6 +121,9 @@ const Post = ({
     } catch (error) {
       console.error("Error posting post:", error);
     }
+    if (onPostDelete) {
+      onPostDelete();
+    }
     setRefresh(!refresh);
   };
 
@@ -136,20 +138,12 @@ const Post = ({
   };
 
   if (!post) {
-    return (
-      <div className="items-center justify-center flex h-[100%] mt-[200px]">
-        <LoadingIcons.TailSpin
-          stroke="white"
-          width="100"
-          height="100"
-          speed={0.8}
-        />
-      </div>
-    );
+    return 
   }
 
   return (
     <div className="w-[700px] ">
+        <Link href={`/user/post/${id}`}>
       <div className="flex flex-row justify-between">
         <div>
           <div className="flex my-3 mx-5">
@@ -224,6 +218,7 @@ const Post = ({
             )}
         </span>
       </div>
+        </Link>
       <div className="w-full flex items-center justify-center flex-col">
         <div className="border-t  w-full border-gray3" />
         <span className="flex justify-between items-center w-[200px] py-1 text-md text-gray2">
@@ -261,4 +256,4 @@ const Post = ({
   );
 };
 
-export default Post;
+export default PostFeed;
