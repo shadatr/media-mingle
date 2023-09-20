@@ -85,3 +85,41 @@ export type UserDataType = {
   }[];
   posts: { id: number; text: string | null; user_id: number | null }[];
 };
+
+export type UserMessagesType = {
+  user: {
+    birth_date: string | null;
+    created_at: string;
+    email: string | null;
+    gender: string | null;
+    id: number;
+    joined_date: string | null;
+    name: string | null;
+    password: string | null;
+    private: boolean | null;
+    profile_picture: string | null;
+    username: string | null;
+  };
+  recieve_userMasseges: {
+    id: number;
+    sender_id: number;
+    reciever_id: number;
+    text: string;
+    seen:boolean
+  }[];
+  sended_userMasseges: {
+    id: number;
+    sender_id: number;
+    reciever_id: number;
+    text: string;
+    seen:boolean
+  }[];
+};
+
+export type MessageType={
+  id: number;
+  sender_id: number;
+  reciever_id: number;
+  text: string;
+  seen:boolean
+}

@@ -54,23 +54,3 @@ export async function GET(
 }
 
 
-
-export async function DELETE(request: Request,{ params }: { params: { id: number } }) {
-  
-  try {
-
-    const res=await supabase.from("tb_posts").delete().eq('id', params.id);
-      console.log(res.error)
-    return new Response(
-      JSON.stringify({ message: "Account created successfully" }),
-      {
-        headers: { "content-type": "application/json" },
-      }
-    );
-  } catch (error) {
-    return new Response(JSON.stringify({ message: "There is a problem" }), {
-      headers: { "content-type": "application/json" },
-      status: 400,
-    });
-  }
-}

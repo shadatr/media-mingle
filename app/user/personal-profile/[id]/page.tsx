@@ -7,6 +7,8 @@ import LoadingIcons from "react-loading-icons";
 import axios from "axios";
 import { supabase } from "@/app/api/supabase";
 import PostFeed from "@/app/components/PostFeed";
+import { AiFillMessage } from "react-icons/ai";
+import Link from "next/link";
 
 const page = ({ params }: { params: { id: number } }) => {
   const session = useSession({ required: true });
@@ -103,9 +105,13 @@ const page = ({ params }: { params: { id: number } }) => {
               <span>{followersdata?.length} followers</span>
             </div>
             {sessionUser?.id != params.id && (
-              <button className="border border-gray3 bg-primary px-5 py-2 rounded-[15px] hover:text-gray2" onClick={handleFollow}>
-                {followersdata?.find((i)=> i.follower_id==sessionUser?.id) ? 'unfollow': 'follow'}
+              <span className="flex items-center">
+
+              <button className="border border-gray3 bg-primary px-5 py-2 rounded-[15px] hover:text-gray2 mr-3" onClick={handleFollow}>
+                {followersdata?.find((i)=> i.follower_id==sessionUser?.id) ? 'unfollow': 'follow'} 
               </button>
+              <Link href={`/user/messages/${params.id}`}><AiFillMessage size='30' /></Link>
+              </span>
             )}
           </span>
         </div>

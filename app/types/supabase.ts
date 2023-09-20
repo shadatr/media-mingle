@@ -9,77 +9,6 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      tb_comment_comments: {
-        Row: {
-          comment_id: number | null
-          created_at: string
-          id: number
-          text: string | null
-          user_id: number | null
-        }
-        Insert: {
-          comment_id?: number | null
-          created_at?: string
-          id?: number
-          text?: string | null
-          user_id?: number | null
-        }
-        Update: {
-          comment_id?: number | null
-          created_at?: string
-          id?: number
-          text?: string | null
-          user_id?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tb_comment_comments_comment_id_fkey"
-            columns: ["comment_id"]
-            referencedRelation: "tb_comments"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "tb_comment_comments_user_id_fkey"
-            columns: ["user_id"]
-            referencedRelation: "tb_users"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      tb_comment_likes: {
-        Row: {
-          comment_id: number | null
-          created_at: string
-          id: number
-          user_id: number | null
-        }
-        Insert: {
-          comment_id?: number | null
-          created_at?: string
-          id?: number
-          user_id?: number | null
-        }
-        Update: {
-          comment_id?: number | null
-          created_at?: string
-          id?: number
-          user_id?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tb_comment_likes_comment_id_fkey"
-            columns: ["comment_id"]
-            referencedRelation: "tb_comments"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "tb_comment_likes_user_id_fkey"
-            columns: ["user_id"]
-            referencedRelation: "tb_users"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
       tb_comments: {
         Row: {
           created_at: string
@@ -190,19 +119,25 @@ export interface Database {
           created_at: string
           id: number
           reciever_id: number | null
+          seen: boolean | null
           sender_id: number | null
+          text: string | null
         }
         Insert: {
           created_at?: string
           id?: number
           reciever_id?: number | null
+          seen?: boolean | null
           sender_id?: number | null
+          text?: string | null
         }
         Update: {
           created_at?: string
           id?: number
           reciever_id?: number | null
+          seen?: boolean | null
           sender_id?: number | null
+          text?: string | null
         }
         Relationships: [
           {
@@ -256,34 +191,6 @@ export interface Database {
           }
         ]
       }
-      tb_post_pictures: {
-        Row: {
-          created_at: string
-          id: number
-          picture: string | null
-          post_id: number | null
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          picture?: string | null
-          post_id?: number | null
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          picture?: string | null
-          post_id?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tb_post_pictures_post_id_fkey"
-            columns: ["post_id"]
-            referencedRelation: "tb_posts"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
       tb_posts: {
         Row: {
           created_at: string
@@ -314,6 +221,7 @@ export interface Database {
       }
       tb_users: {
         Row: {
+          bio: string | null
           birth_date: string | null
           created_at: string
           email: string | null
@@ -327,6 +235,7 @@ export interface Database {
           username: string | null
         }
         Insert: {
+          bio?: string | null
           birth_date?: string | null
           created_at?: string
           email?: string | null
@@ -340,6 +249,7 @@ export interface Database {
           username?: string | null
         }
         Update: {
+          bio?: string | null
           birth_date?: string | null
           created_at?: string
           email?: string | null

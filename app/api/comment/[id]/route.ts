@@ -14,7 +14,8 @@ export async function POST(request: Request) {
   try {
 
     await supabase.from("tb_comments").insert([data]);
-      
+    const res2=await supabase.from("tb_notification").insert([{post_id:data.post_id, notification_sender:data.user_id, type: 'comment', text: 'commented on your post'}]);
+
     return new Response(
       JSON.stringify({ message: "Account created successfully" }),
       {

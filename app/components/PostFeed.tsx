@@ -242,12 +242,14 @@ const PostFeed = ({
             )}
           </div>
           <div className="flex flex items-center justify-center ">
+            <Link href={`/user/post/${id}`}>
             {post?.comments.length}
             <FaRegComment
               size="20"
               color="gray"
               className="cursor-pointer mx-2"
             />
+            </Link>
           </div>
         </span>
         <div className="border-t w-full border-gray3 " />

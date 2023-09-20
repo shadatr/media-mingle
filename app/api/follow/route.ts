@@ -21,6 +21,8 @@ export async function POST(request: Request) {
 
   if (!res.data?.length) {
     const res=await supabase.from("tb_followers").insert([data]);
+    const res2=await supabase.from("tb_notification").insert([{user_id:data.followed_id, notification_sender:data.follower_id, type: 'follow', text: 'followed you'}]);
+    console.log(res2)
   } else {
     await supabase
       .from("tb_followers")

@@ -19,7 +19,8 @@ export async function POST(request: Request) {
 
     if (!res.data?.length) {
       const res1 = await supabase.from("tb_likes").insert([data]);
-      console.log(res1);
+      const res2=await supabase.from("tb_notification").insert([{post_id:data.post_id, notification_sender:data.user_id, type: 'like', text: 'liked your post'}]);
+
     } else {
       await supabase
         .from("tb_likes")
