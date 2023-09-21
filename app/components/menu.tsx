@@ -1,14 +1,9 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBars,
   faTimes,
-  faCogs,
-  faTable,
-  faList,
-  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
@@ -97,7 +92,7 @@ export default function App() {
               <span>Notifications</span>
             </Link>
             <Link
-              href={"/user/sittings"}
+              href={"/user/settings"}
               className="sidebar-position  hover:bg-primary hover:rounded-[20px]"
             >
               <AiFillSetting />
@@ -177,7 +172,7 @@ export default function App() {
               <span>Notifications</span>
             </Link>
             <Link
-              href={"/user/sittings"}
+              href={"/user/settings"}
               className="sidebar-position  hover:bg-primary hover:rounded-[20px]"
             >
               <AiFillSetting />

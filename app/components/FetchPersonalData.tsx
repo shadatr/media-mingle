@@ -38,9 +38,6 @@ export function FetchPersonalData({ id }: { id: number }) {
             const updatedPosts = prevPost?.posts.filter(
               (post: any) => post?.id !== deletedPostId
             );
-            console.log(payload);
-            console.log(updatedPosts); // Move this inside the DELETE condition
-            console.log(deletedPostId);
             return {
               ...prevPost,
               posts: updatedPosts,

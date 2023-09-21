@@ -158,25 +158,40 @@ export interface Database {
         Row: {
           created_at: string
           id: number
+          notification_sender: number | null
           post_id: number | null
+          seen: boolean | null
+          text: string | null
           type: string | null
           user_id: number | null
         }
         Insert: {
           created_at?: string
           id?: number
+          notification_sender?: number | null
           post_id?: number | null
+          seen?: boolean | null
+          text?: string | null
           type?: string | null
           user_id?: number | null
         }
         Update: {
           created_at?: string
           id?: number
+          notification_sender?: number | null
           post_id?: number | null
+          seen?: boolean | null
+          text?: string | null
           type?: string | null
           user_id?: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "tb_notification_notification_sender_fkey"
+            columns: ["notification_sender"]
+            referencedRelation: "tb_users"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "tb_notification_post_id_fkey"
             columns: ["post_id"]
