@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { FetchPosts } from "./FetchPosts";
 import { BsPersonCircle, BsThreeDots } from "react-icons/bs";
 import LoadingIcons from "react-loading-icons";
 import { TiDelete } from "react-icons/ti";
@@ -10,7 +9,6 @@ import { useSession } from "next-auth/react";
 import axios from "axios";
 import { PostType } from "../types/types";
 import { supabase } from "../api/supabase";
-import { useRouter } from "next/navigation";
 
 const Post = ({
   id,
@@ -28,7 +26,7 @@ const Post = ({
   const [post, setPost] = useState<PostType | null>(null);
   const [refresh, setRefresh] = useState(false);
   const popoverRef = useRef<HTMLDivElement | null>(null);
-  const user = post?.user[0];
+  const user = post?.user;
 
   useEffect(() => {
     async function downloadData() {
@@ -54,7 +52,7 @@ const Post = ({
           event: "*",
           schema: "public",
           table: "tb_likes",
-          filter: `post_id=eq.${id}`
+          filter: `post_id=eq.${id}`,
         },
         (payload) => {
           if (payload.eventType === "INSERT") {
@@ -69,8 +67,7 @@ const Post = ({
               }
               return prevPost;
             });
-          } else if (
-            payload.eventType === "DELETE" ) {
+          } else if (payload.eventType === "DELETE") {
             setPost((prevPost) => {
               if (prevPost) {
                 const deletedLike = payload.old;
@@ -150,7 +147,16 @@ const Post = ({
           <div className="flex my-3 mx-5">
             <p className="w-16">
               {user?.profile_picture ? (
-                user.profile_picture
+                <span
+                  style={{ width: "80px", height: "80px" }}
+                  className="inline-block rounded-full overflow-hidden"
+                >
+                  <img
+                    src={user.profile_picture}
+                    alt="Selected"
+                    className="w-full h-full object-cover"
+                  />
+                </span>
               ) : (
                 <BsPersonCircle size="40" />
               )}

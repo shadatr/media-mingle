@@ -64,7 +64,16 @@ const UploadImage = () => {
             <div className="flex m-5">
               <p className="w-16">
                 {user?.profile_picture ? (
-                  user?.profile_picture
+                  <span
+                  style={{ width: "40px", height: "40px" }}
+                  className="inline-block rounded-full overflow-hidden"
+                >
+                  <img
+                    src={user.profile_picture}
+                    alt="Selected"
+                    className="w-full h-full object-cover"
+                  />
+                </span>
                 ) : (
                   <BsPersonCircle size="40" />
                 )}

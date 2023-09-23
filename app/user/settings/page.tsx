@@ -266,7 +266,7 @@ const page = () => {
             {activeTab == "profile_picture" && (
               <span className="flex flex-col w-full ">
                 <p className="m-2 font-bold">Profile picture</p>
-                <label className="w-" htmlFor="fileInput">
+                <label htmlFor="fileInput">
                   {userData?.profile_picture || selectedImage ? (
                     <div
                       className="rounded-full overflow-hidden"

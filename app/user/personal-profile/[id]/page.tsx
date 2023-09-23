@@ -13,58 +13,55 @@ import Link from "next/link";
 const page = ({ params }: { params: { id: number } }) => {
   const session = useSession({ required: true });
   const sessionUser = session.data?.user;
-  const {user,setUser,refresh,setRefresh} = FetchPersonalData({ id: params.id });
+  const { user, setUser, refresh, setRefresh } = FetchPersonalData({
+    id: params.id,
+  });
   const userdata = user && user.user[0];
   const followersdata = user && user?.followers;
   const followingdata = user && user?.following;
   const postsdata = user && user?.posts;
 
-  const handleFollow=()=>{
-    const data={
+  const handleFollow = () => {
+    const data = {
       follower_id: sessionUser?.id,
       followed_id: params.id,
-    }
-    axios.post('/api/follow',data)
-    setRefresh(!refresh)
-  }
-
+    };
+    axios.post("/api/follow", data);
+    setRefresh(!refresh);
+  };
 
   useEffect(() => {
-
     const subscription = supabase
-    .channel("table-db-changes")
-    .on(
-      "postgres_changes",
-      {
-        schema: "public",
-        table: "tb_posts",
-        event: 'DELETE'
-      },
-      (payload) => {
-        console.log(payload)
-          setUser((prevPost:any) => {
-              const deletedPostId = payload.old.id; // Assuming id is the identifier for posts
-              const updatedPosts = prevPost?.posts.filter(
-                (post:any) => post?.id !== deletedPostId
-              );
-              console.log(updatedPosts); // Move this inside the DELETE condition
-              console.log(deletedPostId);
-              return {
-                ...prevPost,
-                posts: updatedPosts,
-              };
-            
+      .channel("table-db-changes")
+      .on(
+        "postgres_changes",
+        {
+          schema: "public",
+          table: "tb_posts",
+          event: "DELETE",
+        },
+        (payload) => {
+          console.log(payload);
+          setUser((prevPost: any) => {
+            const deletedPostId = payload.old.id; // Assuming id is the identifier for posts
+            const updatedPosts = prevPost?.posts.filter(
+              (post: any) => post?.id !== deletedPostId
+            );
+            console.log(updatedPosts); // Move this inside the DELETE condition
+            console.log(deletedPostId);
+            return {
+              ...prevPost,
+              posts: updatedPosts,
+            };
           });
-        
-      }
-    )
-    .subscribe();
-  
+        }
+      )
+      .subscribe();
+
     return () => {
       subscription.unsubscribe();
     };
   }, [refresh]);
-
 
   if (!user) {
     return (
@@ -84,9 +81,18 @@ const page = ({ params }: { params: { id: number } }) => {
       <div className="flex flex-col justify-center items-center w-[700px]">
         <div>
           <div className="flex m-5 items-center gap-5">
-            <div className="w-20">
+            <div>
               {userdata?.profile_picture ? (
-                userdata?.profile_picture
+                <span
+                  style={{ width: "80px", height: "80px" }}
+                  className="inline-block rounded-full overflow-hidden"
+                >
+                  <img
+                    src={userdata.profile_picture}
+                    alt="Selected"
+                    className="w-full h-full object-cover"
+                  />
+                </span>
               ) : (
                 <BsPersonCircle size="80" />
               )}
@@ -106,11 +112,17 @@ const page = ({ params }: { params: { id: number } }) => {
             </div>
             {sessionUser?.id != params.id && (
               <span className="flex items-center">
-
-              <button className="border border-gray3 bg-primary px-5 py-2 rounded-[15px] hover:text-gray2 mr-3" onClick={handleFollow}>
-                {followersdata?.find((i)=> i.follower_id==sessionUser?.id) ? 'unfollow': 'follow'} 
-              </button>
-              <Link href={`/user/messages/${params.id}`}><AiFillMessage size='30' /></Link>
+                <button
+                  className="border border-gray3 bg-primary px-5 py-2 rounded-[15px] hover:text-gray2 mr-3"
+                  onClick={handleFollow}
+                >
+                  {followersdata?.find((i) => i.follower_id == sessionUser?.id)
+                    ? "unfollow"
+                    : "follow"}
+                </button>
+                <Link href={`/user/messages/${params.id}`}>
+                  <AiFillMessage size="30" />
+                </Link>
               </span>
             )}
           </span>
@@ -120,7 +132,13 @@ const page = ({ params }: { params: { id: number } }) => {
           <div className="border-t w-full border-gray3 py-2" />
           {postsdata?.map((post) => {
             if (post.id) {
-              return <PostFeed key={post.id} id={post.id} onPostDelete={()=> setRefresh(!refresh)} />;
+              return (
+                <PostFeed
+                  key={post.id}
+                  id={post.id}
+                  onPostDelete={() => setRefresh(!refresh)}
+                />
+              );
             }
           })}
         </div>

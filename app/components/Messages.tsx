@@ -10,20 +10,20 @@ import { FetchMessages } from "./FetchMessages";
 const Messages = () => {
   const session = useSession({ required: true });
   const user = session.data?.user;
-  const messages = FetchMessages({ id: user?.id });
+  const {messages} = FetchMessages({ id: user?.id });
 
-  if (!messages) {
-    return (
-      <div className="items-center justify-center flex h-[100%] mt-[200px]">
-        <LoadingIcons.TailSpin
-          stroke="white"
-          width="100"
-          height="100"
-          speed={0.8}
-        />
-      </div>
-    );
-  }
+  // if (!messages) {
+  //   return (
+  //     <div className="items-center justify-center flex h-[100%] mt-[200px]">
+  //       <LoadingIcons.TailSpin
+  //         stroke="white"
+  //         width="100"
+  //         height="100"
+  //         speed={0.8}
+  //       />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="flex w-[700px]">
@@ -44,7 +44,16 @@ const Messages = () => {
                 <div className="flex hover:bg-primary hover:rounded-[20px] py-4 px-5 w-[400px]">
                   <div className="w-20">
                     {msg.user?.profile_picture ? (
-                      msg.user?.profile_picture
+                      <span
+                      style={{ width: "60px", height: "60px" }}
+                      className="inline-block rounded-full overflow-hidden"
+                    >
+                      <img
+                        src={msg.user.profile_picture}
+                        alt="Selected"
+                        className="w-full h-full object-cover"
+                      />
+                    </span>
                     ) : (
                       <BsPersonCircle size="60" />
                     )}

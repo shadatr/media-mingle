@@ -5,15 +5,12 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { UserMessagesType } from "../types/types";
 
-
 export function FetchMessages({
   id,
-  onPostSend,
-  user_id
+  user_id,
 }: {
   id?: number;
-  onPostSend?: () => void;
-  user_id?: number
+  user_id?: number;
 }) {
   const session = useSession({ required: true });
   const user = session.data?.user;
@@ -30,7 +27,6 @@ export function FetchMessages({
     };
     downloadData();
   }, [id]);
-
   useEffect(() => {
     const changes = supabase
       .channel("table-db-changes")
@@ -40,46 +36,33 @@ export function FetchMessages({
           event: "*",
           schema: "public",
           table: "tb_messages",
+          filter: `sender_id=eq.${id}`,
         },
-        (payload) => {
+        (payload: any) => {
           setMessages((prevMessages: any) => {
+            console.log(prevMessages);
             if (!prevMessages) return prevMessages;
-  
             const { reciever_id, sender_id, id } = payload.new;
-            const userMessages = messages.find((msg: any) => msg.user.id === user_id);
-  
-            if (payload.eventType === "INSERT" ) {
-              if (reciever_id == id) {
-                userMessages?.recieve_userMasseges.push(payload.new);
-              } else if (sender_id == id) {
-                userMessages?.sended_userMasseges.push(payload.new);
-              }
-            } else if (payload.eventType === "DELETE") {
-              if (reciever_id == id) {
-                const index = userMessages?.recieve_userMasseges.findIndex((msg: any) => msg.id === id);
-                if (index !== -1) {
-                  userMessages?.recieve_userMasseges.splice(index, 1);
-                }
-              } else if (sender_id == id) {
-                const index = userMessages?.sended_userMasseges.findIndex((msg: any) => msg.id === id);
-                if (index !== -1) {
-                  userMessages?.sended_userMasseges.splice(index, 1);
+            const updatedMessages = prevMessages.map((message: any) => {
+              if (message.user.id == user_id) {
+                if (reciever_id == user_id) {
+                  message.recieve_userMasseges.push(payload.new);
+                } else if (sender_id == id) {
+                  message.sended_userMasseges.push(payload.new);
                 }
               }
-            }
-  
-            return [...prevMessages];
+              return message;
+            });
+            return updatedMessages;
           });
         }
       )
       .subscribe();
-  
+
     return () => {
       changes.unsubscribe();
     };
-  }, [id,refresh,onPostSend]);
-  
+  }, [id, refresh]);
 
-
-  return messages;
+  return { messages, setRefresh, refresh };
 }

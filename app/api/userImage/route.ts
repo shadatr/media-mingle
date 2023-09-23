@@ -16,16 +16,19 @@ export async function PUT(request: Request) {
     const imageFile = formData.get("imageFile");
     const name = formData.get("name");
 
-    if (user_id&&imageFile) {
-        const objectName = `images/${user_id}-${name}`; 
-        const uploadRes = await supabase.storage
-          .from("profilePicture")
-          .upload(objectName, imageFile);
-          console.log(uploadRes.data?.path);
-          const getPublicUrl = await supabase.storage
-          .from("profilePicture")
-          .getPublicUrl(`images/${user_id}-${name}`);
-          const res=await supabase.from("tb_users").update({'profile_picture': getPublicUrl.data.publicUrl}).eq('id', user_id)
+    if (user_id && imageFile) {
+      const objectName = `images/${user_id}`;
+      await supabase.storage.from("profilePicture").remove([objectName]);
+      await supabase.storage
+        .from("profilePicture")
+        .upload(objectName, imageFile);
+      const getPublicUrl = await supabase.storage
+        .from("profilePicture")
+        .getPublicUrl(`images/${user_id}`);
+      const res = await supabase
+        .from("tb_users")
+        .update({ profile_picture: getPublicUrl.data.publicUrl })
+        .eq("id", user_id);
 
       return new Response(
         JSON.stringify({ message: "Successfully uploaded" }),

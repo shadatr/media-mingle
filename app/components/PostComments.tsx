@@ -139,7 +139,16 @@ const PostComments = ({ id }: { id: number }) => {
                 <span className="flex items-center m-5" key={comment.id}>
                   <p className="w-16">
                     {commentUser?.profile_picture ? (
-                      <img src={commentUser.profile_picture} alt="User" />
+                      <span
+                      style={{ width: "40px", height: "40px" }}
+                      className="inline-block rounded-full overflow-hidden"
+                    >
+                      <img
+                        src={commentUser.profile_picture}
+                        alt="Selected"
+                        className="w-full h-full object-cover"
+                      />
+                    </span>
                     ) : (
                       <BsPersonCircle size="40" />
                     )}

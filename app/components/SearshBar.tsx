@@ -51,7 +51,16 @@ const SearshBar = () => {
               <Link href={`/user/personal-profile/${user.id}`} className="flex items-center m-2 lg:mx-5 hover:bg-primary hover:rounded-[20px] lg:p-3 sm:p-1">
                 <p className="w-10">
                   {user?.profile_picture ? (
-                    user?.profile_picture
+                    <span
+                    style={{ width: "40px", height: "40px" }}
+                    className="inline-block rounded-full overflow-hidden"
+                  >
+                    <img
+                      src={user.profile_picture}
+                      alt="Selected"
+                      className="w-full h-full object-cover"
+                    />
+                  </span>
                   ) : (
                     <BsPersonCircle size="20" />
                   )}

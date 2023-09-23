@@ -30,7 +30,6 @@ export async function PUT(
     const data = await request.json();
   try {
     const res=await supabase.from("tb_users").update(data).eq('id', params.id)
-    console.log(res)
     return new Response(
       JSON.stringify({ message: "Account created successfully" }),
       {

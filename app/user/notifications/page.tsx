@@ -58,7 +58,16 @@ const page = () => {
                     <div className="flex items-center hover:bg-primary hover:rounded-[20px] py-4 mx-5 w-[400px]">
                       <span className="mx-3">
                         {ntf.user?.profile_picture ? (
-                          ntf.user?.profile_picture
+                          <span
+                          style={{ width: "30px", height: "30px" }}
+                          className="inline-block rounded-full overflow-hidden"
+                        >
+                          <img
+                            src={ntf.user.profile_picture}
+                            alt="Selected"
+                            className="w-full h-full object-cover"
+                          />
+                        </span>
                         ) : (
                           <BsPersonCircle size="30" />
                         )}
@@ -82,7 +91,16 @@ const page = () => {
                     <div className="flex items-center hover:bg-primary hover:rounded-[20px] py-4 mx-5 w-[400px]">
                       <span className="mx-3">
                         {ntf.user?.profile_picture ? (
-                          ntf.user?.profile_picture
+                          <span
+                          style={{ width: "30px", height: "30px" }}
+                          className="inline-block rounded-full overflow-hidden"
+                        >
+                          <img
+                            src={ntf.user.profile_picture}
+                            alt="Selected"
+                            className="w-full h-full object-cover"
+                          />
+                        </span>
                         ) : (
                           <BsPersonCircle size="30" />
                         )}

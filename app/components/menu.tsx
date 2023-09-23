@@ -43,7 +43,16 @@ export default function App() {
                 <div className="flex m-5">
                   <div className="w-20">
                     {user?.profile_picture ? (
-                      user?.profile_picture
+                      <span
+                      style={{ width: "60px", height: "60px" }}
+                      className="inline-block rounded-full overflow-hidden"
+                    >
+                      <img
+                        src={user.profile_picture}
+                        alt="Selected"
+                        className="w-full h-full object-cover"
+                      />
+                    </span>
                     ) : (
                       <BsPersonCircle size="60" />
                     )}
@@ -120,10 +129,19 @@ export default function App() {
                 MediaMingle
               </span>
               <span>
-                <div className="flex m-5">
-                  <div className="w-20">
+                <div className=" m-5">
+                  <div >
                     {user?.profile_picture ? (
-                      user?.profile_picture
+                     <span
+                     style={{ width: "60px", height: "60px" }}
+                     className="inline-block rounded-full overflow-hidden"
+                   >
+                     <img
+                       src={user.profile_picture}
+                       alt="Selected"
+                       className="w-full h-full object-cover"
+                     />
+                   </span>
                     ) : (
                       <BsPersonCircle size="60" />
                     )}

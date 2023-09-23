@@ -27,7 +27,7 @@ const PostFeed = ({
   const [post, setPost] = useState<PostType | null>(null);
   const [refresh, setRefresh] = useState(false);
   const popoverRef = useRef<HTMLDivElement | null>(null);
-  const user = post?.user[0];
+  const user = post?.user;
   
 
   useEffect(() => {
@@ -36,6 +36,7 @@ const PostFeed = ({
         const response = await axios.get(`/api/post/${id}`);
         const data: PostType = response.data.message;
         setPost(data);
+        console.log(data)
       } catch (error) {
         console.log("Error downloading data: ", error);
       }
@@ -144,7 +145,16 @@ const PostFeed = ({
           <div className="flex my-3 mx-5">
             <p className="w-16">
               {user?.profile_picture ? (
-                user.profile_picture
+                <span
+                style={{ width: "80px", height: "80px" }}
+                className="inline-block rounded-full overflow-hidden"
+              >
+                <img
+                  src={user.profile_picture}
+                  alt="Selected"
+                  className="w-full h-full object-cover"
+                />
+              </span>
               ) : (
                 <BsPersonCircle size="40" />
               )}
