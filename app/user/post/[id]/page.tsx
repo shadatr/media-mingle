@@ -4,7 +4,7 @@ import React from 'react'
 
 const page = ({ params }: { params: { id: number } }) => {
   return (
-    <div className='flex flex-col flex items-center justify-center w-[100%]'>
+    <div className='flex flex-col items-center justify-center w-[100%]'>
         <Post id={params.id}/>
         <PostComments id={params.id}/>
     </div>

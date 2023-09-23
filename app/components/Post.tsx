@@ -29,9 +29,6 @@ const Post = ({
   const [refresh, setRefresh] = useState(false);
   const popoverRef = useRef<HTMLDivElement | null>(null);
   const user = post?.user[0];
-  const router = useRouter();
-
-  console.log("Current pathname:", router);
 
   useEffect(() => {
     async function downloadData() {
@@ -57,14 +54,14 @@ const Post = ({
           event: "*",
           schema: "public",
           table: "tb_likes",
+          filter: `post_id=eq.${id}`
         },
         (payload) => {
-          if (payload.eventType === "INSERT" && payload.new.post_id == id) {
+          if (payload.eventType === "INSERT") {
             setPost((prevPost: any) => {
               if (prevPost) {
                 const newLike = payload.new;
                 const updatedLikes = [...prevPost.likes, newLike];
-                console.log(updatedLikes); // Move this inside the INSERT condition
                 return {
                   ...prevPost,
                   likes: updatedLikes,
@@ -73,16 +70,13 @@ const Post = ({
               return prevPost;
             });
           } else if (
-            payload.eventType === "DELETE" &&
-            payload.old.post_id == id
-          ) {
+            payload.eventType === "DELETE" ) {
             setPost((prevPost) => {
               if (prevPost) {
                 const deletedLike = payload.old;
                 const updatedLikes = prevPost.likes.filter(
                   (like) => like.id !== deletedLike.id
                 );
-                console.log(updatedLikes); // Move this inside the DELETE condition
                 return {
                   ...prevPost,
                   likes: updatedLikes,
@@ -109,6 +103,7 @@ const Post = ({
     if (onPostDelete) {
       onPostDelete();
     }
+    setRefresh(!refresh);
   };
 
   const handleLike = (postId: number) => {
@@ -246,7 +241,7 @@ const Post = ({
               />
             )}
           </div>
-          <div className="flex flex items-center justify-center ">
+          <div className="flex items-center justify-center ">
             {post?.comments.length}
             <FaRegComment
               size="20"

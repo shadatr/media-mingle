@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { FetchPosts } from "./FetchPosts";
 import { BsPersonCircle, BsThreeDots } from "react-icons/bs";
 import LoadingIcons from "react-loading-icons";
 import { TiDelete } from "react-icons/ti";
@@ -10,7 +9,6 @@ import { useSession } from "next-auth/react";
 import axios from "axios";
 import { PostType } from "../types/types";
 import { supabase } from "../api/supabase";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 const PostFeed = ({
@@ -38,14 +36,13 @@ const PostFeed = ({
         const response = await axios.get(`/api/post/${id}`);
         const data: PostType = response.data.message;
         setPost(data);
-        console.log(data);
       } catch (error) {
         console.log("Error downloading data: ", error);
       }
     }
 
     downloadData();
-  }, [id,refresh]);
+  }, [id]);
 
   useEffect(() => {
     const subscription2 = supabase
@@ -56,14 +53,14 @@ const PostFeed = ({
           event: "*",
           schema: "public",
           table: "tb_likes",
+          filter: `post_id=eq.${id}`
         },
         (payload) => {
-          if (payload.eventType === "INSERT" && payload.new.post_id == id) {
+          if (payload.eventType === "INSERT") {
             setPost((prevPost: any) => {
               if (prevPost) {
                 const newLike = payload.new;
                 const updatedLikes = [...prevPost.likes, newLike];
-                console.log(updatedLikes); // Move this inside the INSERT condition
                 return {
                   ...prevPost,
                   likes: updatedLikes,
@@ -72,16 +69,13 @@ const PostFeed = ({
               return prevPost;
             });
           } else if (
-            payload.eventType === "DELETE" &&
-            payload.old.post_id == id
-          ) {
+            payload.eventType === "DELETE" ) {
             setPost((prevPost) => {
               if (prevPost) {
                 const deletedLike = payload.old;
                 const updatedLikes = prevPost.likes.filter(
                   (like) => like.id !== deletedLike.id
                 );
-                console.log(updatedLikes); // Move this inside the DELETE condition
                 return {
                   ...prevPost,
                   likes: updatedLikes,
@@ -105,26 +99,27 @@ const PostFeed = ({
 
   const handledelete = (id: number) => {
     axios.delete(`/api/post/${id}`);
+    setRefresh(!refresh)
     if (onPostDelete) {
       onPostDelete();
     }
   };
 
   const handleLike = (postId: number) => {
-    console.log(postId);
     const data = {
       user_id: sessionUser?.id,
       post_id: postId, // Use the postId parameter passed to the function
     };
     try {
-      axios.post(`/api/like/${postId}`, data); // Use postId in the URL
+      axios.post(`/api/like/${postId}`, data);
+      setRefresh(!refresh);
     } catch (error) {
       console.error("Error posting post:", error);
     }
+    
     if (onPostDelete) {
       onPostDelete();
     }
-    setRefresh(!refresh);
   };
 
   const handleImageClick = (imageUrl: string) => {
@@ -241,9 +236,9 @@ const PostFeed = ({
               />
             )}
           </div>
-          <div className="flex flex items-center justify-center ">
-            <Link href={`/user/post/${id}`}>
+          <div className="flex flex-row items-center justify-center ">
             {post?.comments.length}
+            <Link href={`/user/post/${id}`}>
             <FaRegComment
               size="20"
               color="gray"

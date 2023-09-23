@@ -18,7 +18,6 @@ const page = () => {
         const res = await axios.get(`/api/feedPosts/${user?.id}`);
         const data: SinglePostType[] = res.data.message;
         setPosts(data.flat());
-        console.log(res)
         setLoaded(true);
       }
     };
