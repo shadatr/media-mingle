@@ -21,7 +21,7 @@ const LoginPage = () => {
 
     if (result?.error == "CredentialsSignin" 
     || !result?.error) {
-      router.push('/'); 
+      router.push('/user/home'); 
       
     } 
   };
