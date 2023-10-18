@@ -118,4 +118,8 @@ body{
 
 /* Add transitions and styles for close button as needed */
 
-
+.menu{
+  @media (max-width: 900px) {
+        display: none;
+}
+}
