@@ -59,9 +59,9 @@ const page = ({ params }: { params: { id: number } }) => {
         </div>
       ) : (
         <div className="w-[100%] flex justify-center ml-20">
-          <div className="w-[900px] flex ">
+          <div className=" flex ">
             <Messages />
-            <div className={`w-[800px] flex flex-col `}>
+            <div className={`w-[500px] flex flex-col p-5`}>
               {message? <div className="flex flex-col h-[600px] overflow-y-auto">
                 {[
                   ...message?.recieve_userMasseges,
@@ -147,7 +147,7 @@ const page = ({ params }: { params: { id: number } }) => {
                       )}
                     </div>
                   ))}
-              </div>: <div>no masseges</div>}
+              </div>: <div className="flex h-[700px]  justify-center items-center font-bold">no masseges</div>}
               
               <div className="flex items-center">
                 <span className="bg-primary w-full rounded-[20px] p-5">

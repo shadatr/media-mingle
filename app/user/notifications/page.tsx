@@ -18,7 +18,10 @@ const page = () => {
       if (user?.id != undefined) {
         const res = await axios.get(`/api/notifications/${user.id}`);
         const data: NotificationType[] = res.data.message;
-        setNotifications(data.flat());
+        const sortedData = data.flat().sort((a, b) => b.notification.id - a.notification.id);
+        console.log(sortedData)
+
+        setNotifications(sortedData);
         setLoadings(true);
         data.flat().map((ntf)=>{
           axios.put(`/api/notifications/${ntf.notification.id}`)
@@ -47,9 +50,9 @@ const page = () => {
   );
 
   return (
-    <div className="flex items-center justify-center w-[100%]">
+    <div className="flex items-center justify-center w-[80%]">
       {loading ? (
-        <div className="flex w-[700px]">
+        <div className="flex  h-[800px] overflow-y-auto">
           <div className=" flex flex-col">
             {sortedNotifications.map((ntf) => {
               if (ntf.notification.type == "follow") {

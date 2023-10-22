@@ -104,7 +104,7 @@ const page = () => {
   };
 
   return (
-    <div className="flex justify-center items-center w-[100%]">
+    <div className="flex justify-center items-center w-[105%]">
       {selectedUser ? (
         <div className="flex">
           <div className="flex flex-col w-[400px]">
@@ -339,9 +339,9 @@ const page = () => {
             )}
             {activeTab == "private" && (
               <span className="flex flex-col w-full ">
-                <p className="m-2 font-bold">Privacy</p>
+                <p className="m-2 font-bold ">Privacy</p>
                 {userData?.private ? (
-                  <Switch {...label} defaultChecked />
+                  <Switch {...label} defaultChecked  />
                 ) : (
                   <Switch
                     {...label}

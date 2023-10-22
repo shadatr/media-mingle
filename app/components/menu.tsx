@@ -201,7 +201,7 @@ export default function App() {
               <span>Logout</span>
             </button>
           </div>
-          <div className="border-r h-screen border-gray3 p-5" />
+          <div className="border-r h-screen border-gray3 p-5 z-30" />
         </div>
       </div>
     </div>

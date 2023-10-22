@@ -26,8 +26,8 @@ const Messages = () => {
   // }
 
   return (
-    <div className="flex w-[700px]">
-      <div className=" flex flex-col">
+    <div className="flex  w-[400px]">
+      {messages.length? <div className=" flex flex-col">
         {messages.map((msg) => {
           const combinedIds = [
             ...msg.recieve_userMasseges,
@@ -73,7 +73,10 @@ const Messages = () => {
             );
           }
         })}
-      </div>
+      </div>: <div className="items-center justify-center flex w-[100%] font-bold">
+        There is not messages yet!
+      </div>}
+      
       <div className="border-r h-screen border-gray3 " />
     </div>
   );

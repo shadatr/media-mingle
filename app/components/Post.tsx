@@ -27,14 +27,12 @@ const Post = ({
   const [refresh, setRefresh] = useState(false);
   const popoverRef = useRef<HTMLDivElement | null>(null);
   const user = post?.user;
-
   useEffect(() => {
     async function downloadData() {
       try {
         const response = await axios.get(`/api/post/${id}`);
         const data: PostType = response.data.message;
         setPost(data);
-        console.log(data);
       } catch (error) {
         console.log("Error downloading data: ", error);
       }
@@ -207,7 +205,7 @@ const Post = ({
           {isPopoverOpen &&
             post.post[0].id === isPopoverOpenComment &&
             post.post[0].user_id == sessionUser?.id &&
-            post.post[0].user_id == user?.id && (
+             (
               <div
                 ref={popoverRef}
                 className="absolute bg-primary rounded-md shadow-lg"

@@ -26,8 +26,8 @@ const PostComments = ({ id }: { id: number }) => {
       setUserComments(data);
 
       const response2 = await axios.get(`/api/post/${id}`);
-        const data2: PostType = response2.data.message;
-        setFetchPosts(data2);
+      const data2: PostType = response2.data.message;
+      setFetchPosts(data2);
     };
     fetchComments();
   }, []);
@@ -43,7 +43,7 @@ const PostComments = ({ id }: { id: number }) => {
           table: "tb_comments",
         },
         (payload) =>
-        setFetchPosts((prevPost:any) => {
+          setFetchPosts((prevPost: any) => {
             if (!prevPost) return prevPost;
             const updatedLikes = [...prevPost.comments];
 
@@ -71,7 +71,6 @@ const PostComments = ({ id }: { id: number }) => {
     };
   }, [id]);
 
-  
   const togglePopover = (id: number) => {
     setIsPopoverOpen(!isPopoverOpen);
     setIsPopoverOpenComment(id);
@@ -90,7 +89,7 @@ const PostComments = ({ id }: { id: number }) => {
       console.error("Error posting post:", error);
       toast.error("error happend while posting the comment!");
     }
-    setRefresh(!refresh)
+    setRefresh(!refresh);
   };
 
   if (!fetchPosts) {
@@ -99,19 +98,29 @@ const PostComments = ({ id }: { id: number }) => {
 
   const handledelete = (id: number) => {
     axios.delete(`/api/comment/${id}`);
-    setRefresh(!refresh)
+    setRefresh(!refresh);
   };
 
   return (
     <div className="w-[700px]">
       <div className="flex items-center  m-5">
-        <p className="w-16">
-          {user?.profile_picture ? (
-            user.profile_picture
-          ) : (
-            <BsPersonCircle size="40" />
-          )}
-        </p>
+        <span>
+
+        {user?.profile_picture ? (
+          <span
+            style={{ width: "40px", height: "40px" }}
+            className="inline-block rounded-full overflow-hidden"
+          >
+            <img
+              src={user.profile_picture}
+              alt="Selected"
+              className="w-full h-full object-cover"
+            />
+          </span>
+        ) : (
+          <BsPersonCircle size="40" />
+        )}
+        </span>
         <span className="px-2">
           <textarea
             placeholder="Reply on the post..."
@@ -140,15 +149,15 @@ const PostComments = ({ id }: { id: number }) => {
                   <p className="w-16">
                     {commentUser?.profile_picture ? (
                       <span
-                      style={{ width: "40px", height: "40px" }}
-                      className="inline-block rounded-full overflow-hidden"
-                    >
-                      <img
-                        src={commentUser.profile_picture}
-                        alt="Selected"
-                        className="w-full h-full object-cover"
-                      />
-                    </span>
+                        style={{ width: "40px", height: "40px" }}
+                        className="inline-block rounded-full overflow-hidden"
+                      >
+                        <img
+                          src={commentUser.profile_picture}
+                          alt="Selected"
+                          className="w-full h-full object-cover"
+                        />
+                      </span>
                     ) : (
                       <BsPersonCircle size="40" />
                     )}
@@ -169,22 +178,25 @@ const PostComments = ({ id }: { id: number }) => {
                     size="20"
                     onClick={() => togglePopover(comment.id)}
                   />
-                  {isPopoverOpen && comment.id === isPopoverOpenComment && comment.user_id==user?.id&&  fetchPosts.post[0].user_id==user?.id&& (
-                    <div
-                      ref={popoverRef}
-                      className="absolute bg-primary rounded-md shadow-lg"
-                    >
-                      <button
-                        className="block text-red-500 hover:text-red-700 p-2"
-                        onClick={() => {
-                          handledelete(comment.id);
-                          setIsPopoverOpen(false);
-                        }}
+                  {isPopoverOpen &&
+                    comment.id === isPopoverOpenComment &&
+                    comment.user_id == user?.id &&
+                    fetchPosts.post[0].user_id == user?.id && (
+                      <div
+                        ref={popoverRef}
+                        className="absolute bg-primary rounded-md shadow-lg"
                       >
-                        Delete
-                      </button>
-                    </div>
-                  )}
+                        <button
+                          className="block text-red-500 hover:text-red-700 p-2"
+                          onClick={() => {
+                            handledelete(comment.id);
+                            setIsPopoverOpen(false);
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    )}
                 </span>
               </div>
               <div className="border-t  w-full border-gray3" />

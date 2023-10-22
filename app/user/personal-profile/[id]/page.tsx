@@ -1,6 +1,6 @@
 "use client";
 import { useSession } from "next-auth/react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { BsPersonCircle } from "react-icons/bs";
 import { FetchPersonalData } from "@/app/components/FetchPersonalData";
 import LoadingIcons from "react-loading-icons";
@@ -9,13 +9,27 @@ import { supabase } from "@/app/api/supabase";
 import PostFeed from "@/app/components/PostFeed";
 import { AiFillMessage } from "react-icons/ai";
 import Link from "next/link";
+import { UserDataType } from "@/app/types/types";
 
 const page = ({ params }: { params: { id: number } }) => {
   const session = useSession({ required: true });
   const sessionUser = session.data?.user;
-  const { user, setUser, refresh, setRefresh } = FetchPersonalData({
-    id: params.id,
-  });
+  const [user, setUser] = useState<UserDataType>();
+  const [refresh, setRefresh] = useState(false);
+
+  useEffect(() => {
+    async function downloadData() {
+      try {
+        const response = await axios.get(`/api/user/${params.id}`);
+        const data: UserDataType = response.data.message;
+        setUser(data);
+      } catch (error) {
+        console.log("Error downloading data: ", error);
+      }
+    }
+
+    downloadData();
+  }, []);
   const userdata = user && user.user[0];
   const followersdata = user && user?.followers;
   const followingdata = user && user?.following;
@@ -62,6 +76,77 @@ const page = ({ params }: { params: { id: number } }) => {
       subscription.unsubscribe();
     };
   }, [refresh]);
+
+  useEffect(() => {
+    const subscription = supabase
+      .channel("table-db-changes")
+      .on(
+        "postgres_changes",
+        {
+          schema: "public",
+          table: "tb_posts",
+          event: "DELETE",
+          filter: `post_id=eq.${sessionUser?.id}`,
+        },
+        (payload) => {
+          setUser((prevPost: any) => {
+            const deletedPostId = payload.old.id; // Assuming id is the identifier for posts
+            const updatedPosts = prevPost?.posts.filter(
+              (post: any) => post?.id !== deletedPostId
+            );
+            return {
+              ...prevPost,
+              posts: updatedPosts,
+            };
+          });
+        }
+      )
+      .subscribe();
+
+    const changes = supabase
+      .channel("table-db-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "tb_followers",
+          filter: `follower_id=eq.${sessionUser?.id}`,
+        },
+        (payload) =>{
+        console.log(payload)
+          setUser((prevPost: any) => {
+            
+            if (!prevPost) return prevPost;
+            const updatedFollowers = [...prevPost.followers];
+            if (payload.eventType === "INSERT") {
+              console.log(payload)
+
+              updatedFollowers.push(payload.new);
+            } else if (payload.eventType === "DELETE") {
+              console.log(payload)
+
+              const index = updatedFollowers.findIndex(
+                (like) => like.id === payload.old.id
+              );
+              if (index !== -1) {
+                updatedFollowers.splice(index, 1);
+              }
+            }
+
+            return {
+              ...prevPost,
+              followers: updatedFollowers,
+            };
+          })}
+      )
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+      changes.unsubscribe();
+    };
+  }, [ refresh]);
 
   if (!user) {
     return (
