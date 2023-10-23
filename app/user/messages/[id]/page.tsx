@@ -64,7 +64,7 @@ const page = ({ params }: { params: { id: number } }) => {
       ) : (
         <div className="w-[100%] flex justify-center lg:ml-20">
           <div className=" flex ">
-            <span className="sm:hidden">
+            <span className="sm:hidden lg:flex">
             <Messages  />
             </span>
             <div className={`lg:w-[500px] sm:w-[350px] flex flex-col p-5`}>
