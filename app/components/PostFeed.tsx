@@ -140,7 +140,7 @@ const PostFeed = ({
       <Link href={`/user/post/${id}`}>
         <div className="flex flex-row justify-between">
           <div>
-            <div className="flex my-3 mx-5">
+            <Link href={`/user/personal-profile/${user?.id}`} className="flex my-3 mx-5">
                 {user?.profile_picture ? (
                   <span
                     style={{ width: "40px", height: "40px" }}
@@ -153,13 +153,15 @@ const PostFeed = ({
                     />
                   </span>
                 ) : (
-                  <BsPersonCircle size="40" />
+                  <span className="mr-5">
+                    <BsPersonCircle size="40" />
+                  </span>
                 )}
               <span>
                 <h1 className="font-bold">{user?.name}</h1>
                 <h2 className="text-xsm">{user?.username}</h2>
               </span>
-            </div>
+            </Link>
             <span className="text-center mx-5">{post?.post[0].text}</span>
             {isModalOpen && (
               <div className="modal ">

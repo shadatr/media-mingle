@@ -10,6 +10,7 @@ import axios from "axios";
 import { PostType } from "../types/types";
 import { supabase } from "../api/supabase";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 const Post = ({
   id,
@@ -142,7 +143,7 @@ const Post = ({
     <div className="lg:w-[700px] sm:w-[300px]">
       <div className="flex flex-row justify-between">
         <div>
-          <div className="flex my-3 mx-5 items-center">
+          <Link href={`/user/personal-profile/${user?.id}`} className="flex my-3 mx-5 items-center">
             <p className="mr-5">
               {user?.profile_picture ? (
                 <span
@@ -162,7 +163,7 @@ const Post = ({
               <h1 className="text-ms font-bold">{user?.name}</h1>
               <h2 className="text-sm">{user?.username}</h2>
             </span>
-          </div>
+          </Link>
           <span className="text-center mx-5">{post?.post[0].text}</span>
           {isModalOpen && (
             <div className="modal ">
