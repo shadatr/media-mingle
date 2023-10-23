@@ -39,7 +39,7 @@ export default function Menu() {
           )}
         </span>
         {isOpen ? (
-          <div className="flex  bg-blue3">
+          <div className="flex  bg-blue3 h-screen">
             <div>
               <div className="flex flex-col items-center ">
                 <span className=" lg:text-xlg sm:text-lg font-bold mx-10 mt-10">
