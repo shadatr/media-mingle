@@ -1,4 +1,4 @@
-import Menu from "../components/Menu";
+import Menu from "../components/menu";
 import SearshBar from "../components/SearshBar";
 import { Toaster } from "react-hot-toast";
 
