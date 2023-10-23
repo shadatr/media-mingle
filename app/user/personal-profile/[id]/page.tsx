@@ -10,6 +10,7 @@ import PostFeed from "@/app/components/PostFeed";
 import { AiFillMessage } from "react-icons/ai";
 import Link from "next/link";
 import { UserDataType } from "@/app/types/types";
+import { redirect } from "next/navigation";
 
 const page = ({ params }: { params: { id: number } }) => {
   const session = useSession({ required: true });
@@ -17,6 +18,10 @@ const page = ({ params }: { params: { id: number } }) => {
   const [user, setUser] = useState<UserDataType>();
   const [refresh, setRefresh] = useState(false);
 
+  if (!session.data?.user ) {
+    redirect('/');
+  }
+  
   useEffect(() => {
     async function downloadData() {
       try {
@@ -131,15 +136,14 @@ const page = ({ params }: { params: { id: number } }) => {
   }
 
   return (
-    <div className="flex w-[100%] items-center justify-center">
-      <div className="flex flex-col justify-center items-center w-[700px]">
+    <div className="flex w-[100%]  items-center justify-center lg:text-sm sm:text-xsm">
+      <div className="flex flex-col justify-center items-center lg:w-[700px] sm:w-[350px]">
         <div>
           <div className="flex m-5 items-center gap-5">
             <div>
               {userdata?.profile_picture ? (
                 <span
-                  style={{ width: "80px", height: "80px" }}
-                  className="inline-block rounded-full overflow-hidden"
+                  className="inline-block rounded-full overflow-hidden lg:w-[80px] lg:h-[80px] sm:w-[40px] sm:h-[40px]"
                 >
                   <img
                     src={userdata.profile_picture}
@@ -152,14 +156,14 @@ const page = ({ params }: { params: { id: number } }) => {
               )}
             </div>
             <span>
-              <p className="text-md font-bold">{userdata?.name}</p>
-              <h1 className="text-sm font-semibold pb-2">
+              <p className="lg:text-md sm:text-sm font-bold">{userdata?.name}</p>
+              <h1 className="lg:text-sm sm:text-xsm font-semibold pb-2">
                 {userdata?.username}
               </h1>
-              <span className="text-xsm">{userdata?.bio}</span>
+              <span className="lg:text-xsm sm:text-xxsm">{userdata?.bio}</span>
             </span>
           </div>
-          <span className="font-bold flex w-[550px] justify-between items-center ">
+          <span className="font-bold flex lg:w-[550px] sm:w-[350px] justify-between items-center ">
             <div className=" flex gap-10 ml-36">
               <span>{followingdata?.length} following</span>
               <span>{followersdata?.length} followers</span>
@@ -181,7 +185,7 @@ const page = ({ params }: { params: { id: number } }) => {
             )}
           </span>
         </div>
-        <div className="w-full mt-10">
+        <div className="w-[100%] justify-center items-center mt-10">
           <h1 className="text-lg font-bold text-gray2">Posts</h1>
           <div className="border-t w-full border-gray3 py-2" />
           {postsdata?.map((post) => {

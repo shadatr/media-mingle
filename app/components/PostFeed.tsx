@@ -136,16 +136,15 @@ const PostFeed = ({
   }
 
   return (
-    <div className="w-[700px] ">
+    <div className="lg:w-[700px] sm:w-[350px] sm:text-xsm lg:text-sm ">
       <Link href={`/user/post/${id}`}>
         <div className="flex flex-row justify-between">
           <div>
             <div className="flex my-3 mx-5">
-              <p className="w-16">
                 {user?.profile_picture ? (
                   <span
                     style={{ width: "40px", height: "40px" }}
-                    className="inline-block rounded-full overflow-hidden"
+                    className="inline-block rounded-full overflow-hidden mr-5"
                   >
                     <img
                       src={user.profile_picture}
@@ -156,9 +155,8 @@ const PostFeed = ({
                 ) : (
                   <BsPersonCircle size="40" />
                 )}
-              </p>
               <span>
-                <h1 className="text-sm font-bold">{user?.name}</h1>
+                <h1 className="font-bold">{user?.name}</h1>
                 <h2 className="text-xsm">{user?.username}</h2>
               </span>
             </div>

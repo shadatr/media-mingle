@@ -17,7 +17,6 @@ const LoginPage = () => {
       password,
       redirect: false,
     });
-    console.log(result)
 
     if (result?.error == "CredentialsSignin" 
     || !result?.error) {

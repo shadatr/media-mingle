@@ -139,15 +139,14 @@ const Post = ({
   }
 
   return (
-    <div className="w-[700px] ">
+    <div className="lg:w-[700px] sm:w-[300px]">
       <div className="flex flex-row justify-between">
         <div>
           <div className="flex my-3 mx-5 items-center">
             <p className="mr-5">
               {user?.profile_picture ? (
                 <span
-                  style={{ width: "60px", height: "60px" }}
-                  className="inline-block rounded-full overflow-hidden"
+                  className="inline-block rounded-full overflow-hidden lg:w-[60px] lg:h-[60px] sm:w-[40px] sm:h-[40px]"
                 >
                   <img
                     src={user.profile_picture}
@@ -160,8 +159,8 @@ const Post = ({
               )}
             </p>
             <span className="items-center">
-              <h1 className="text-sm font-bold">{user?.name}</h1>
-              <h2 className="text-xsm">{user?.username}</h2>
+              <h1 className="text-ms font-bold">{user?.name}</h1>
+              <h2 className="text-sm">{user?.username}</h2>
             </span>
           </div>
           <span className="text-center mx-5">{post?.post[0].text}</span>

@@ -26,7 +26,7 @@ const Messages = () => {
   // }
 
   return (
-    <div className="flex  w-[400px]">
+    <div className="flex lg:w-[400px] sm:w-[300px]">
       {messages.length? <div className=" flex flex-col">
         {messages.map((msg) => {
           const combinedIds = [

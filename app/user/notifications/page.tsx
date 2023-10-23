@@ -3,6 +3,7 @@ import { NotificationType } from "@/app/types/types";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { BsPersonCircle } from "react-icons/bs";
 import LoadingIcons from "react-loading-icons";
@@ -12,6 +13,10 @@ const page = () => {
   const user = session.data?.user;
   const [notifications, setNotifications] = useState<NotificationType[]>([]);
   const [loading, setLoadings] = useState(false);
+
+  if (!session.data?.user ) {
+    redirect('/');
+  }
 
   useEffect(() => {
     const downloadData = async () => {
@@ -50,15 +55,15 @@ const page = () => {
   );
 
   return (
-    <div className="flex items-center justify-center w-[80%]">
+    <div className="flex items-center justify-center w-[80%] lg:text-sm sm:text-xsm">
       {loading ? (
-        <div className="flex  h-[800px] overflow-y-auto">
+        <div className="flex h-[800px] overflow-y-auto">
           <div className=" flex flex-col">
             {sortedNotifications.map((ntf) => {
               if (ntf.notification.type == "follow") {
                 return (
                   <Link href={`/user/personal-profile/${ntf.user.id}`}>
-                    <div className="flex items-center hover:bg-primary hover:rounded-[20px] py-4 mx-5 w-[400px]">
+                    <div className="flex items-center hover:bg-primary hover:rounded-[20px] py-4 mx-5 lg:w-[400px] sm:w-[300px]">
                       <span className="mx-3">
                         {ntf.user?.profile_picture ? (
                           <span
@@ -91,7 +96,7 @@ const page = () => {
               ) {
                 return (
                   <Link href={`/user/post/${ntf.notification.post_id}`}>
-                    <div className="flex items-center hover:bg-primary hover:rounded-[20px] py-4 mx-5 w-[400px]">
+                    <div className="flex items-center hover:bg-primary hover:rounded-[20px] py-4 mx-5 lg:w-[400px] sm:w-[300px]">
                       <span className="mx-3">
                         {ntf.user?.profile_picture ? (
                           <span

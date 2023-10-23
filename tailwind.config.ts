@@ -23,11 +23,12 @@ const config: Config = {
         lg: "24px",
         md: "20px",
         sm:"16px",
-        xsm:"14px"
+        xsm:"14px",
+        xxsm:"10px"
       },
     },
     screens: {
-      sm: "400px",
+      sm: "200px",
       md: "900px",
       lg: "1300px",
       xl: "1440px",

@@ -13,6 +13,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Switch from "@mui/material/Switch";
 import { createHash } from "crypto";
+import { redirect } from "next/navigation";
 
 const label = { inputProps: { "aria-label": "Switch demo" } };
 
@@ -24,9 +25,13 @@ const page = () => {
   const [newPassword, setnewPassword] = useState('');
   const [newConPassword, setnewConPassword] = useState('');
   const [userData, setUserData] = useState<UserType>();
-  const [activeTab, setActiveTab] = useState<string>("Tab 1");
+  const [activeTab, setActiveTab] = useState<string>("");
   const [selectedImage, setSelectedImage] = useState<File>();
   const [error, setError] = useState("");
+
+  if (!session.data?.user ) {
+    redirect('/');
+  }
 
   useEffect(() => {
     if (user?.id) {
@@ -107,7 +112,7 @@ const page = () => {
     <div className="flex justify-center items-center w-[105%]">
       {selectedUser ? (
         <div className="flex">
-          <div className="flex flex-col w-[400px]">
+          <div className={`flex flex-col lg:w-[400px] sm:w-[300px] lg:text-sm sm:text-xsm ${activeTab.length>0? "sm:hidden lg:flex":""}`}>
             <span
               onClick={() => handleTabClick("username")}
               className="hover:bg-primary hover:rounded-[20px] cursor-pointer px-6 py-3"
@@ -172,10 +177,10 @@ const page = () => {
               <h1>{selectedUser.gender || "Not selected"}</h1>
             </span>
           </div>
-          <div className="border-r h-screen border-gray3 " />
-          <div className="mx-10 w-[300px]">
+          <div className={`border-r h-screen border-gray3  ${activeTab.length>0? "sm:hidden lg:flex":""}`} />
+          <div className={`mx-10  ${activeTab.length<0? "sm:hidden sm:w-[300px] lg:flex":""}`}>
             {activeTab == "username" && (
-              <span className="flex flex-col w-full ">
+              <span className="flex flex-col w-full">
                 <p className="m-2 font-bold">Username</p>
                 <input
                   value={userData?.username || ""}
@@ -208,7 +213,7 @@ const page = () => {
               </span>
             )}
             {activeTab == "name" && (
-              <span className="flex flex-col w-full ">
+              <span className="flex flex-col lg:w-full ">
                 <p className="m-2 font-bold">Name</p>
                 <input
                   value={userData?.name || ""}

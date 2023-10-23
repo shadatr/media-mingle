@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { SinglePostType } from "@/app/types/types";
 import PostFeed from "@/app/components/PostFeed";
 import LoadingIcons from "react-loading-icons";
+import { redirect } from 'next/navigation';
 
 const page = () => {
   const session = useSession({ required: true });
@@ -12,6 +13,10 @@ const page = () => {
   const [posts, setPosts] = useState<SinglePostType[]>([]);
   const [loaded, setLoaded] = useState(false);
 
+  if (!session.data?.user ) {
+    redirect('/');
+  }
+  
   useEffect(() => {
     const downloadData = async () => {
       if (user?.id != undefined) {

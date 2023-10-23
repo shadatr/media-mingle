@@ -6,6 +6,7 @@ import { BsPersonCircle } from "react-icons/bs";
 import LoadingIcons from "react-loading-icons";
 import Messages from "@/app/components/Messages";
 import { FetchMessages } from "@/app/components/FetchMessages";
+import { redirect } from "next/navigation";
 
 const page = ({ params }: { params: { id: number } }) => {
   const session = useSession({ required: true });
@@ -16,6 +17,10 @@ const page = ({ params }: { params: { id: number } }) => {
     user_id: params.id,
   });
 
+  if (!session.data?.user ) {
+    redirect('/');
+  }
+  
   useEffect(() => {
     if (user?.id) {
       const setAllToSeen = () => {
@@ -58,10 +63,12 @@ const page = ({ params }: { params: { id: number } }) => {
           />
         </div>
       ) : (
-        <div className="w-[100%] flex justify-center ml-20">
+        <div className="w-[100%] flex justify-center lg:ml-20">
           <div className=" flex ">
-            <Messages />
-            <div className={`w-[500px] flex flex-col p-5`}>
+            <span className="sm:hidden">
+            <Messages  />
+            </span>
+            <div className={`lg:w-[500px] sm:w-[350px] flex flex-col p-5`}>
               {message? <div className="flex flex-col h-[600px] overflow-y-auto">
                 {[
                   ...message?.recieve_userMasseges,
@@ -147,19 +154,19 @@ const page = ({ params }: { params: { id: number } }) => {
                       )}
                     </div>
                   ))}
-              </div>: <div className="flex h-[700px]  justify-center items-center font-bold">no masseges</div>}
+              </div>: <div className="flex h-[600px]  justify-center items-center font-bold">no masseges</div>}
               
               <div className="flex items-center">
-                <span className="bg-primary w-full rounded-[20px] p-5">
+                <span className="bg-primary w-full rounded-[20px] lg:p-5 sm:p-3">
                   <textarea
-                    className="bg-primary w-full outline-none lg:h-[20px] sm:h-[150px]"
+                    className="bg-primary w-full outline-none lg:h-[20px] sm:h-[20px]"
                     placeholder="write your message here..."
                     value={msgText}
                     onChange={(e) => setMsgText(e.target.value)}
                   />
                 </span>
                 <span
-                  className="bg-blue1 rounded-[20px] py-4 px-6 font-bold cursor-pointer "
+                  className="bg-blue1 rounded-[20px] lg:py-4 lg:px-6 sm:py-2 sm:px-3 font-bold cursor-pointer "
                   onClick={handelSend}
                 >
                   Send

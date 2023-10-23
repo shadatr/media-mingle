@@ -102,14 +102,13 @@ const PostComments = ({ id }: { id: number }) => {
   };
 
   return (
-    <div className="w-[700px]">
+    <div className="lg:w-[700px] sm:w-[300px] lg:text-sm sm:text-xsm">
       <div className="flex items-center  m-5">
         <span>
 
         {user?.profile_picture ? (
           <span
-            style={{ width: "40px", height: "40px" }}
-            className="inline-block rounded-full overflow-hidden"
+            className="inline-block rounded-full overflow-hidden lg:w-[40px] lg:h-[40px] sm:w-[30px] sm:h-[30px]"
           >
             <img
               src={user.profile_picture}
@@ -124,12 +123,12 @@ const PostComments = ({ id }: { id: number }) => {
         <span className="px-2">
           <textarea
             placeholder="Reply on the post..."
-            className="outline-none bg-primary px-5 py-4 w-[550px] rounded-[15px] h-[60px] "
+            className="outline-none bg-primary lg:px-5 lg:py-4 sm:px-2 sm:py-2  lg:w-[550px] sm:w-[200px] rounded-[15px] lg:h-[60px] sm:h-[40px]"
             onChange={(e) => setCommentText(e.target.value)}
           />
         </span>
         <span
-          className="bg-blue1 lg:px-8 lg:py-3 sm:px-5 sm:py-1 rounded-[20px] font-bold cursor-pointer"
+          className="bg-blue1 lg:px-8 lg:py-3 sm:px-3 sm:py-1 rounded-[20px] font-bold cursor-pointer"
           onClick={handelPost}
         >
           Post
@@ -149,8 +148,7 @@ const PostComments = ({ id }: { id: number }) => {
                   <p className="w-16">
                     {commentUser?.profile_picture ? (
                       <span
-                        style={{ width: "40px", height: "40px" }}
-                        className="inline-block rounded-full overflow-hidden"
+                        className="inline-block rounded-full overflow-hidden lg:w-[40px] lg:h-[40px] sm:w-[30px] sm:h-[30px]"
                       >
                         <img
                           src={commentUser.profile_picture}

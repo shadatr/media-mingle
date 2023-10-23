@@ -35,7 +35,7 @@ const SigninPage = () => {
     }
     try{
       axios.post('/api/signin',data )
-      router.push('/')
+      router.push('/user/home')
     }
     catch{
 
