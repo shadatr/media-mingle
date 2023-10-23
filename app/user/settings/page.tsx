@@ -18,7 +18,7 @@ import { redirect } from "next/navigation";
 const label = { inputProps: { "aria-label": "Switch demo" } };
 
 const page = () => {
-  const session = useSession({ required: true });
+  const session = useSession({ required: false });
   const user = session.data?.user;
   const [selectedUser, setSelectedUser] = useState<UserType>();
   const [currentPassword, setcurrentPassword] = useState('');
@@ -29,10 +29,9 @@ const page = () => {
   const [selectedImage, setSelectedImage] = useState<File>();
   const [error, setError] = useState("");
 
-  if (!session ) {
-    redirect('/');
+  if (!session.data?.user) {
+    redirect("/");
   }
-
   useEffect(() => {
     if (user?.id) {
       const downloadData = async () => {

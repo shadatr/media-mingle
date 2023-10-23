@@ -10,16 +10,16 @@ import { toast } from "react-hot-toast";
 import { redirect } from "next/navigation";
 
 const UploadImage = () => {
-  const session = useSession({ required: true });
+  const session = useSession({ required: false });
   const user = session.data?.user;
   const [selectedImage, setSelectedImage] = useState<File[]>([]);
   const [postText, setPostText] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
 
-  if (!session ) {
-    redirect('/');
+  if (!session.data?.user) {
+    redirect("/");
   }
-
+  
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files && files.length > 0) {

@@ -7,10 +7,10 @@ import { redirect } from 'next/navigation';
 import React from 'react'
 
 const page = ({ params }: { params: { id: number } }) => {
-  const session = useSession({ required: true });
+  const session = useSession({ required: false });
 
-  if (!session ) {
-    redirect('/');
+  if (!session.data?.user) {
+    redirect("/");
   }
   return (
     <div className='flex flex-col items-center justify-center w-[100%]'>

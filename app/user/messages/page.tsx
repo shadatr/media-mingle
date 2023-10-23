@@ -6,12 +6,10 @@ import { redirect } from "next/navigation";
 
 
 const page = () => {
-  const session = useSession({ required: true });
-
-  if (!session ) {
-    redirect('/');
+  const session = useSession({ required: false });
+  if (!session.data?.user) {
+    redirect("/");
   }
-    
   return (
     <div className="flex justify-center items-center w-[80%]"><Messages/></div>
   )

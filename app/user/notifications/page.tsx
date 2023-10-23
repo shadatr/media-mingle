@@ -9,15 +9,14 @@ import { BsPersonCircle } from "react-icons/bs";
 import LoadingIcons from "react-loading-icons";
 
 const page = () => {
-  const session = useSession({ required: true });
+  const session = useSession({ required: false });
   const user = session.data?.user;
   const [notifications, setNotifications] = useState<NotificationType[]>([]);
   const [loading, setLoadings] = useState(false);
 
-  if (!session ) {
-    redirect('/');
+  if (!session.data?.user) {
+    redirect("/");
   }
-
   useEffect(() => {
     const downloadData = async () => {
       if (user?.id != undefined) {

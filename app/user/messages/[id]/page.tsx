@@ -9,7 +9,7 @@ import { FetchMessages } from "@/app/components/FetchMessages";
 import { redirect } from "next/navigation";
 
 const page = ({ params }: { params: { id: number } }) => {
-  const session = useSession({ required: true });
+  const session = useSession({ required: false });
   const user = session.data?.user;
   const [msgText, setMsgText] = useState("");
   const { messages, refresh, setRefresh } = FetchMessages({
@@ -17,10 +17,9 @@ const page = ({ params }: { params: { id: number } }) => {
     user_id: params.id,
   });
 
-  if (!session ) {
-    redirect('/');
+  if (!session.data?.user) {
+    redirect("/");
   }
-  
   useEffect(() => {
     if (user?.id) {
       const setAllToSeen = () => {

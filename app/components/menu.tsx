@@ -12,12 +12,15 @@ import { BsFillPersonFill } from "react-icons/bs";
 import { RiNotificationFill } from "react-icons/ri";
 import { BsXLg } from "react-icons/bs";
 import { TiThMenu } from "react-icons/ti";
+import { redirect } from "next/navigation";
 
 export default function Menu() {
-  const session = useSession({ required: true });
+  const session = useSession({ required: false });
   const user = session.data?.user;
   const [isOpen, setIsOpen] = useState(false);
-
+  if (!session.data?.user) {
+    redirect("/");
+  }
   return (
     <div className="fixed">
       <div
@@ -110,9 +113,9 @@ export default function Menu() {
               </Link>
               <button
                 className="hover:bg-primary hover:rounded-[20px] lg:mt-10 flex items-center gap-3 p-3"
-                onClick={() => signOut({ redirect: true })}
+                onClick={() => {signOut({redirect:true}); redirect('/auth/login')}}
               >
-                <AiOutlineLogout size="28" className=" cursor-pointer" />
+                <AiOutlineLogout size="28" className=" cursor-pointer"  />
                 <span>Logout</span>
               </button>
             </div>

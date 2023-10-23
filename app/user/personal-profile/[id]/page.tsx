@@ -13,15 +13,14 @@ import { UserDataType } from "@/app/types/types";
 import { redirect } from "next/navigation";
 
 const page = ({ params }: { params: { id: number } }) => {
-  const session = useSession({ required: true });
+  const session = useSession({ required: false });
   const sessionUser = session.data?.user;
   const [user, setUser] = useState<UserDataType>();
   const [refresh, setRefresh] = useState(false);
 
-  if (!session ) {
-    redirect('/');
+  if (!session.data?.user) {
+    redirect("/");
   }
-  
   useEffect(() => {
     async function downloadData() {
       try {

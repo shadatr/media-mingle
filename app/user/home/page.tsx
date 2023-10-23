@@ -8,15 +8,15 @@ import LoadingIcons from "react-loading-icons";
 import { redirect } from 'next/navigation';
 
 const page = () => {
-  const session = useSession({ required: true });
+  const session = useSession({ required: false });
   const user = session.data?.user;
   const [posts, setPosts] = useState<SinglePostType[]>([]);
   const [loaded, setLoaded] = useState(false);
 
-  if (!session ) {
-    redirect('/');
+  if (!session.data?.user) {
+    redirect("/");
   }
-  
+
   useEffect(() => {
     const downloadData = async () => {
       if (user?.id != undefined) {
