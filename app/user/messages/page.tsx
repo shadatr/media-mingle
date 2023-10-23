@@ -1,3 +1,5 @@
+'use client'
+
 import Messages from "@/app/components/Messages"
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
@@ -6,7 +8,7 @@ import { redirect } from "next/navigation";
 const page = () => {
   const session = useSession({ required: true });
 
-  if (!session.data?.user ) {
+  if (!session ) {
     redirect('/');
   }
     

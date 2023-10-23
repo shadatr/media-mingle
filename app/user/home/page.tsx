@@ -13,7 +13,7 @@ const page = () => {
   const [posts, setPosts] = useState<SinglePostType[]>([]);
   const [loaded, setLoaded] = useState(false);
 
-  if (!session.data?.user ) {
+  if (!session ) {
     redirect('/');
   }
   

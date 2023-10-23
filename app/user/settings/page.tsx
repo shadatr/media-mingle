@@ -29,7 +29,7 @@ const page = () => {
   const [selectedImage, setSelectedImage] = useState<File>();
   const [error, setError] = useState("");
 
-  if (!session.data?.user ) {
+  if (!session ) {
     redirect('/');
   }
 
@@ -112,7 +112,7 @@ const page = () => {
     <div className="flex justify-center items-center w-[105%]">
       {selectedUser ? (
         <div className="flex">
-          <div className={`flex flex-col lg:w-[400px] sm:w-[300px] lg:text-sm sm:text-xsm ${activeTab.length>0? "sm:hidden lg:flex":""}`}>
+          <div className={`flex flex-col lg:w-[400px] sm:w-[300px] lg:text-sm sm:text-xsm ${activeTab.length>0? "sm:hidden lg:flex":" lg:flex"}`}>
             <span
               onClick={() => handleTabClick("username")}
               className="hover:bg-primary hover:rounded-[20px] cursor-pointer px-6 py-3"
@@ -178,7 +178,7 @@ const page = () => {
             </span>
           </div>
           <div className={`border-r h-screen border-gray3  ${activeTab.length>0? "sm:hidden lg:flex":""}`} />
-          <div className={`mx-10  ${activeTab.length<0? "sm:hidden sm:w-[300px] lg:flex":""}`}>
+          <div className={`mx-10  ${activeTab.length<0? "sm:hidden sm:w-[300px] lg:w-[300px] lg:flex":"lg:flex lg:w-[300px] "}`}>
             {activeTab == "username" && (
               <span className="flex flex-col w-full">
                 <p className="m-2 font-bold">Username</p>

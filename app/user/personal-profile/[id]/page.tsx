@@ -18,7 +18,7 @@ const page = ({ params }: { params: { id: number } }) => {
   const [user, setUser] = useState<UserDataType>();
   const [refresh, setRefresh] = useState(false);
 
-  if (!session.data?.user ) {
+  if (!session ) {
     redirect('/');
   }
   

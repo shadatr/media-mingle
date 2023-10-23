@@ -1,3 +1,5 @@
+'use client'
+
 import Post from '@/app/components/Post'
 import PostComments from '@/app/components/PostComments'
 import { useSession } from 'next-auth/react';
@@ -7,7 +9,7 @@ import React from 'react'
 const page = ({ params }: { params: { id: number } }) => {
   const session = useSession({ required: true });
 
-  if (!session.data?.user ) {
+  if (!session ) {
     redirect('/');
   }
   return (

@@ -14,7 +14,7 @@ const page = () => {
   const [notifications, setNotifications] = useState<NotificationType[]>([]);
   const [loading, setLoadings] = useState(false);
 
-  if (!session.data?.user ) {
+  if (!session ) {
     redirect('/');
   }
 
