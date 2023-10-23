@@ -13,7 +13,7 @@ import { RiNotificationFill } from "react-icons/ri";
 import { BsXLg } from "react-icons/bs";
 import { TiThMenu } from "react-icons/ti";
 
-export default function App() {
+export default function Menu() {
   const session = useSession({ required: true });
   const user = session.data?.user;
   const [isOpen, setIsOpen] = useState(false);

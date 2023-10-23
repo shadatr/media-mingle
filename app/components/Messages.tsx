@@ -12,18 +12,6 @@ const Messages = () => {
   const user = session.data?.user;
   const {messages} = FetchMessages({ id: user?.id });
 
-  // if (!messages) {
-  //   return (
-  //     <div className="items-center justify-center flex h-[100%] mt-[200px]">
-  //       <LoadingIcons.TailSpin
-  //         stroke="white"
-  //         width="100"
-  //         height="100"
-  //         speed={0.8}
-  //       />
-  //     </div>
-  //   );
-  // }
 
   return (
     <div className="flex lg:w-[400px] sm:w-[300px]">
