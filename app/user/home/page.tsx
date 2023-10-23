@@ -45,8 +45,8 @@ const page = () => {
   return (
     <div className="flex flex-col items-center justify-center w-full">
       <div className="mt-20">
-        <h1 className="text-lg font-bold text-gray2 ">Feed</h1>
-        <div className="border-t  border-gray3 py-2 w-[700px]" />
+        <h1 className="lg:text-lg sm:text-md font-bold text-gray2 ">Feed</h1>
+        <div className="border-t  border-gray3 py-2 lg:w-[700px] sm:w-[350px]" />
         {posts.length > 0 ? (
           posts.map((post) => <PostFeed id={post.id} />)
         ) : (

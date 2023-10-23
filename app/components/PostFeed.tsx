@@ -187,7 +187,7 @@ const PostFeed = ({
                     <img
                       src={fileInfo.publicUrl}
                       alt="Selected"
-                      className={`rounded-[20px] w-[330px] cursor-pointer`}
+                      className={`rounded-[20px] lg:w-[330px] sm:[200px] cursor-pointer`}
                       onClick={() => handleImageClick(fileInfo.publicUrl)}
                     />
                   )
