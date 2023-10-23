@@ -26,19 +26,19 @@ export async function GET(
         .eq("id", data.data[0].user_id)
         .select("*");
 
-        const { data: fileList, error } = await supabase.storage
+      const { data: fileList, error } = await supabase.storage
         .from("posts")
         .list("images");
-      
+
       if (error) {
         console.error("Error listing files:", error);
         return;
       }
-      
+
       const filteredFiles = fileList.filter(
         (file) => file !== null && file.name.includes(params.id)
       );
-      
+
       const downloadPromises = filteredFiles.map(async (file) => {
         const fileList2 = await supabase.storage
           .from("posts")
@@ -46,10 +46,10 @@ export async function GET(
         console.log(fileList2.data);
         return fileList2.data;
       });
-      
+
       const images = await Promise.all(downloadPromises);
-            
-      console.log(images)
+
+      console.log(images);
 
       const data3 = await supabase
         .from("tb_likes")
@@ -62,11 +62,11 @@ export async function GET(
         .eq("post_id", params.id);
 
       const data5 = {
-        post: data.data,
-        user: data2.data,
-        picture: images,
-        likes: data3.data,
-        comments: data4.data,
+        post: data.data.flat(),
+        user: data2.data?.flat(),
+        picture: images.flat(),
+        likes: data3.data?.flat(),
+        comments: data4.data?.flat(),
       };
 
       return new Response(JSON.stringify({ message: data5 }), {
@@ -82,13 +82,17 @@ export async function GET(
   }
 }
 
-
-export async function DELETE(request: Request,{ params }: { params: { id: number } }) {
-  
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: number } }
+) {
   try {
+    await supabase.from("tb_likes").delete().eq("post_id", params.id);
+    await supabase.from("tb_notification").delete().eq("post_id", params.id);
+    await supabase.from("tb_comments").delete().eq("post_id", params.id);
 
-    const res=await supabase.from("tb_posts").delete().eq('id', params.id);
-      console.log(res.error)
+    const res = await supabase.from("tb_posts").delete().eq("id", params.id);
+    console.log(res.error);
     return new Response(
       JSON.stringify({ message: "Account created successfully" }),
       {

@@ -9,6 +9,7 @@ import { useSession } from "next-auth/react";
 import axios from "axios";
 import { PostType } from "../types/types";
 import { supabase } from "../api/supabase";
+import toast from "react-hot-toast";
 
 const Post = ({
   id,
@@ -26,7 +27,7 @@ const Post = ({
   const [post, setPost] = useState<PostType | null>(null);
   const [refresh, setRefresh] = useState(false);
   const popoverRef = useRef<HTMLDivElement | null>(null);
-  const user = post?.user;
+  const user = post?.user[0];
   useEffect(() => {
     async function downloadData() {
       try {
@@ -94,7 +95,7 @@ const Post = ({
   };
 
   const handledelete = (id: number) => {
-    axios.delete(`/api/post/${id}`);
+    axios.delete(`/api/post/${id}`).then(()=> toast.success('deleted successfully') );
     if (onPostDelete) {
       onPostDelete();
     }
@@ -102,13 +103,12 @@ const Post = ({
   };
 
   const handleLike = (postId: number) => {
-    console.log(postId);
     const data = {
       user_id: sessionUser?.id,
-      post_id: postId, // Use the postId parameter passed to the function
+      post_id: postId, 
     };
     try {
-      axios.post(`/api/like/${postId}`, data); // Use postId in the URL
+      axios.post(`/api/like/${postId}`, data); 
     } catch (error) {
       console.error("Error posting post:", error);
     }
@@ -142,11 +142,11 @@ const Post = ({
     <div className="w-[700px] ">
       <div className="flex flex-row justify-between">
         <div>
-          <div className="flex my-3 mx-5">
-            <p className="w-16">
+          <div className="flex my-3 mx-5 items-center">
+            <p className="mr-5">
               {user?.profile_picture ? (
                 <span
-                  style={{ width: "80px", height: "80px" }}
+                  style={{ width: "60px", height: "60px" }}
                   className="inline-block rounded-full overflow-hidden"
                 >
                   <img
@@ -159,7 +159,7 @@ const Post = ({
                 <BsPersonCircle size="40" />
               )}
             </p>
-            <span>
+            <span className="items-center">
               <h1 className="text-sm font-bold">{user?.name}</h1>
               <h2 className="text-xsm">{user?.username}</h2>
             </span>

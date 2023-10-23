@@ -44,38 +44,7 @@ const page = ({ params }: { params: { id: number } }) => {
     setRefresh(!refresh);
   };
 
-  useEffect(() => {
-    const subscription = supabase
-      .channel("table-db-changes")
-      .on(
-        "postgres_changes",
-        {
-          schema: "public",
-          table: "tb_posts",
-          event: "DELETE",
-        },
-        (payload) => {
-          console.log(payload);
-          setUser((prevPost: any) => {
-            const deletedPostId = payload.old.id; // Assuming id is the identifier for posts
-            const updatedPosts = prevPost?.posts.filter(
-              (post: any) => post?.id !== deletedPostId
-            );
-            console.log(updatedPosts); // Move this inside the DELETE condition
-            console.log(deletedPostId);
-            return {
-              ...prevPost,
-              posts: updatedPosts,
-            };
-          });
-        }
-      )
-      .subscribe();
 
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [refresh]);
 
   useEffect(() => {
     const subscription = supabase

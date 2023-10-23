@@ -10,6 +10,7 @@ import axios from "axios";
 import { PostType } from "../types/types";
 import { supabase } from "../api/supabase";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 const PostFeed = ({
   id,
@@ -27,8 +28,7 @@ const PostFeed = ({
   const [post, setPost] = useState<PostType | null>(null);
   const [refresh, setRefresh] = useState(false);
   const popoverRef = useRef<HTMLDivElement | null>(null);
-  const user = post?.user;
-  
+  const user = post?.user[0];
 
   useEffect(() => {
     async function downloadData() {
@@ -36,7 +36,6 @@ const PostFeed = ({
         const response = await axios.get(`/api/post/${id}`);
         const data: PostType = response.data.message;
         setPost(data);
-        console.log(data)
       } catch (error) {
         console.log("Error downloading data: ", error);
       }
@@ -54,7 +53,7 @@ const PostFeed = ({
           event: "*",
           schema: "public",
           table: "tb_likes",
-          filter: `post_id=eq.${id}`
+          filter: `post_id=eq.${id}`,
         },
         (payload) => {
           if (payload.eventType === "INSERT") {
@@ -69,8 +68,7 @@ const PostFeed = ({
               }
               return prevPost;
             });
-          } else if (
-            payload.eventType === "DELETE" ) {
+          } else if (payload.eventType === "DELETE") {
             setPost((prevPost) => {
               if (prevPost) {
                 const deletedLike = payload.old;
@@ -99,8 +97,8 @@ const PostFeed = ({
   };
 
   const handledelete = (id: number) => {
-    axios.delete(`/api/post/${id}`);
-    setRefresh(!refresh)
+    axios.delete(`/api/post/${id}`).then(()=> toast.success('deleted successfully') );
+    setRefresh(!refresh);
     if (onPostDelete) {
       onPostDelete();
     }
@@ -117,7 +115,7 @@ const PostFeed = ({
     } catch (error) {
       console.error("Error posting post:", error);
     }
-    
+
     if (onPostDelete) {
       onPostDelete();
     }
@@ -134,96 +132,101 @@ const PostFeed = ({
   };
 
   if (!post) {
-    return 
+    return;
   }
 
   return (
     <div className="w-[700px] ">
-        <Link href={`/user/post/${id}`}>
-      <div className="flex flex-row justify-between">
-        <div>
-          <div className="flex my-3 mx-5">
-            <p className="w-16">
-              {user?.profile_picture ? (
-                <span
-                style={{ width: "80px", height: "80px" }}
-                className="inline-block rounded-full overflow-hidden"
-              >
-                <img
-                  src={user.profile_picture}
-                  alt="Selected"
-                  className="w-full h-full object-cover"
-                />
+      <Link href={`/user/post/${id}`}>
+        <div className="flex flex-row justify-between">
+          <div>
+            <div className="flex my-3 mx-5">
+              <p className="w-16">
+                {user?.profile_picture ? (
+                  <span
+                    style={{ width: "40px", height: "40px" }}
+                    className="inline-block rounded-full overflow-hidden"
+                  >
+                    <img
+                      src={user.profile_picture}
+                      alt="Selected"
+                      className="w-full h-full object-cover"
+                    />
+                  </span>
+                ) : (
+                  <BsPersonCircle size="40" />
+                )}
+              </p>
+              <span>
+                <h1 className="text-sm font-bold">{user?.name}</h1>
+                <h2 className="text-xsm">{user?.username}</h2>
               </span>
-              ) : (
-                <BsPersonCircle size="40" />
+            </div>
+            <span className="text-center mx-5">{post?.post[0].text}</span>
+            {isModalOpen && (
+              <div className="modal ">
+                <div className="modal-content ">
+                  <button
+                    onClick={closeModal}
+                    className="top-2 left-0 w-full cursor-pointer  "
+                  >
+                    <TiDelete size="60" color="black" />
+                  </button>
+                  <img
+                    src={selectedImage}
+                    alt="Selected"
+                    className="rounded-[20px] max-w-screen-lg mx-auto"
+                  />
+                </div>
+              </div>
+            )}
+            <span className={`grid grid-cols-2 my-5 gap-1 mx-5`}>
+              {post?.picture?.map(
+                (fileInfo) =>
+                  fileInfo && (
+                    <img
+                      src={fileInfo.publicUrl}
+                      alt="Selected"
+                      className={`rounded-[20px] w-[330px] cursor-pointer`}
+                      onClick={() => handleImageClick(fileInfo.publicUrl)}
+                    />
+                  )
               )}
-            </p>
-            <span>
-              <h1 className="text-sm font-bold">{user?.name}</h1>
-              <h2 className="text-xsm">{user?.username}</h2>
             </span>
           </div>
-          <span className="text-center mx-5">{post?.post[0].text}</span>
-          {isModalOpen && (
-            <div className="modal ">
-              <div className="modal-content ">
-                <button
-                  onClick={closeModal}
-                  className="top-2 left-0 w-full cursor-pointer  "
+          <span className="p-2 cursor-pointer">
+            <BsThreeDots
+              color="gray"
+              size="20"
+              onClick={(event: MouseEvent) => {
+                event.stopPropagation();
+                event.preventDefault();
+                togglePopover(post.post[0].id);
+              }}
+            />
+            {isPopoverOpen &&
+              post.post[0].id === isPopoverOpenComment &&
+              post.post[0].user_id == sessionUser?.id && (
+                <div
+                  ref={popoverRef}
+                  className="absolute bg-primary rounded-md shadow-lg"
                 >
-                  <TiDelete size="60" color="black" />
-                </button>
-                <img
-                  src={selectedImage}
-                  alt="Selected"
-                  className="rounded-[20px] max-w-screen-lg mx-auto"
-                />
-              </div>
-            </div>
-          )}
-          <span className={`grid grid-cols-2 my-5 gap-1 mx-5`}>
-            {post?.picture?.map(
-              (fileInfo) =>
-                fileInfo && (
-                  <img
-                    src={fileInfo.publicUrl}
-                    alt="Selected"
-                    className={`rounded-[20px] w-[330px] cursor-pointer`}
-                    onClick={() => handleImageClick(fileInfo.publicUrl)}
-                  />
-                )
-            )}
+                  <button
+                    className="block text-red-500 hover:text-red-700 p-2"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      event.preventDefault();
+                      handledelete(post.post[0].id);
+                      setIsPopoverOpen(false);
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
           </span>
         </div>
-        <span className="p-2 cursor-pointer">
-          <BsThreeDots
-            color="gray"
-            size="20"
-            onClick={() => togglePopover(post.post[0].id)}
-          />
-          {isPopoverOpen &&
-            post.post[0].id === isPopoverOpenComment &&
-            post.post[0].user_id == sessionUser?.id &&
-            post.post[0].user_id == user?.id && (
-              <div
-                ref={popoverRef}
-                className="absolute bg-primary rounded-md shadow-lg"
-              >
-                <button
-                  className="block text-red-500 hover:text-red-700 p-2"
-                  onClick={() => {
-                    handledelete(post.post[0].id);
-                    setIsPopoverOpen(false);
-                  }}
-                >
-                  Delete
-                </button>
-              </div>
-            )}
-        </span>
-      </div>
-        </Link>
+      </Link>
       <div className="w-full flex items-center justify-center flex-col">
         <div className="border-t  w-full border-gray3" />
         <span className="flex justify-between items-center w-[200px] py-1 text-md text-gray2">
@@ -249,11 +252,11 @@ const PostFeed = ({
           <div className="flex flex-row items-center justify-center ">
             {post?.comments.length}
             <Link href={`/user/post/${id}`}>
-            <FaRegComment
-              size="20"
-              color="gray"
-              className="cursor-pointer mx-2"
-            />
+              <FaRegComment
+                size="20"
+                color="gray"
+                className="cursor-pointer mx-2"
+              />
             </Link>
           </div>
         </span>

@@ -4,7 +4,7 @@ import { FetchPosts } from "./FetchPosts";
 import { useSession } from "next-auth/react";
 import { BsPersonCircle, BsThreeDots } from "react-icons/bs";
 import axios from "axios";
-import { CommentLikes, PostType, UserType } from "../types/types";
+import { PostType, UserType } from "../types/types";
 import { toast } from "react-hot-toast";
 import { supabase } from "../api/supabase";
 
@@ -30,7 +30,7 @@ const PostComments = ({ id }: { id: number }) => {
       setFetchPosts(data2);
     };
     fetchComments();
-  }, []);
+  }, [refresh]);
 
   useEffect(() => {
     const changes = supabase
@@ -69,7 +69,7 @@ const PostComments = ({ id }: { id: number }) => {
     return () => {
       changes.unsubscribe();
     };
-  }, [id]);
+  }, [id,refresh]);
 
   const togglePopover = (id: number) => {
     setIsPopoverOpen(!isPopoverOpen);

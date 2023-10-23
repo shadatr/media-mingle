@@ -20,7 +20,7 @@ export type PostType = {
     name: string | null;
     profile_picture: string | null;
     username: string | null;
-  };
+  }[];
   picture?: { publicUrl: string }[];
   likes: { id: number; post_id: number | null; user_id: number | null }[];
   comments: {
