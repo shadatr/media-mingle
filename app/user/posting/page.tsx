@@ -7,6 +7,7 @@ import { BsPersonCircle } from "react-icons/bs";
 import { TiDelete } from "react-icons/ti";
 import LoadingIcons from "react-loading-icons";
 import { toast } from "react-hot-toast";
+import { redirect } from "next/navigation";
 
 const UploadImage = () => {
   const session = useSession({ required: true });
@@ -14,6 +15,10 @@ const UploadImage = () => {
   const [selectedImage, setSelectedImage] = useState<File[]>([]);
   const [postText, setPostText] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
+
+  if (!session.data?.user ) {
+    redirect('/');
+  }
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
