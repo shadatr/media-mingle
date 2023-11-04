@@ -24,6 +24,7 @@ const LoginPage = () => {
       
     } 
   };
+  
   return (
     <div className="login-background h-screen text-secondary flex lg:flex-row  sm:flex-col lg:justify-between items-center lg:px-24 ">
       <div className="login-card lg:w-[380px] lg:h-[540px] sm:w-[300px] sm:h-[400px]  bg-blue3 bg-opacity-30 backdrop-blur-[50px] flex flex-col justify-center items-center lg:mt-20 sm:mt-40 rounded-[30px]">
@@ -42,7 +43,7 @@ const LoginPage = () => {
         <p className="sm:text-xsm lg:text-sm">
           Don't have an account?{" "}
           <Link href={"/auth/signin"} className="underline decoration-solid">
-            Sign in
+            Sign up
           </Link>
         </p>
       </div>
