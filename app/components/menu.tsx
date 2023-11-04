@@ -109,7 +109,7 @@ export default function Menu() {
                 className="  hover:bg-primary hover:rounded-[20px] flex items-center gap-3 p-3"
               >
                 <AiFillSetting />
-                <span>Sittings</span>
+                <span>Settings</span>
               </Link>
               <button
                 className="hover:bg-primary hover:rounded-[20px] lg:mt-10 flex items-center gap-3 p-3"
@@ -194,7 +194,7 @@ export default function Menu() {
               className="  hover:bg-primary hover:rounded-[20px] flex items-center gap-3 p-3"
             >
               <AiFillSetting />
-              <span>Sittings</span>
+              <span>Settings</span>
             </Link>
             <button
               className="hover:bg-primary hover:rounded-[20px] lg:mt-10 flex items-center gap-3 p-3"
