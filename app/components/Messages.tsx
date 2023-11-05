@@ -62,7 +62,7 @@ const Messages = () => {
           }
         })}
       </div>: <div className="items-center justify-center flex w-[100%] font-bold">
-        There is not messages yet!
+        There is no messages yet!
       </div>}
       
       <div className="border-r h-screen border-gray3 " />
