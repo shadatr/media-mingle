@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 
 const page = () => {
   const session = useSession({ required: false });
-  if (!session.data?.user) {
+  if (!session.data?.user && session.status != "loading") {
     redirect("/");
   }
   return (

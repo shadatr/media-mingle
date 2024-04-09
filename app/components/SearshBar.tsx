@@ -19,9 +19,7 @@ const SearshBar = () => {
         setShowResults(false);
       }
     };
-
     document.addEventListener("mousedown", handleOutsideClick);
-
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };

@@ -9,9 +9,10 @@ import React from 'react'
 const page = ({ params }: { params: { id: number } }) => {
   const session = useSession({ required: false });
 
-  if (!session.data?.user) {
+  if (!session.data?.user && session.status != "loading") {
     redirect("/");
   }
+  
   return (
     <div className='flex flex-col items-center justify-center w-[100%]'>
         <Post id={params.id}/>

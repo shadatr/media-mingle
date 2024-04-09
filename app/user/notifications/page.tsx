@@ -14,9 +14,10 @@ const page = () => {
   const [notifications, setNotifications] = useState<NotificationType[]>([]);
   const [loading, setLoadings] = useState(false);
 
-  if (!session.data?.user) {
+  if (!session.data?.user && session.status != "loading") {
     redirect("/");
   }
+  
   useEffect(() => {
     const downloadData = async () => {
       if (user?.id != undefined) {

@@ -2,7 +2,6 @@
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import { BsPersonCircle } from "react-icons/bs";
-import { FetchPersonalData } from "@/app/components/FetchPersonalData";
 import LoadingIcons from "react-loading-icons";
 import axios from "axios";
 import { supabase } from "@/app/api/supabase";
@@ -17,8 +16,7 @@ const page = ({ params }: { params: { id: number } }) => {
   const sessionUser = session.data?.user;
   const [user, setUser] = useState<UserDataType>();
   const [refresh, setRefresh] = useState(false);
-
-  if (!session.data?.user) {
+  if (!session.data?.user && session.status != "loading") {
     redirect("/");
   }
   useEffect(() => {
@@ -47,7 +45,6 @@ const page = ({ params }: { params: { id: number } }) => {
     axios.post("/api/follow", data);
     setRefresh(!refresh);
   };
-
 
 
   useEffect(() => {

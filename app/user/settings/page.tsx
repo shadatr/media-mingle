@@ -29,9 +29,10 @@ const page = () => {
   const [selectedImage, setSelectedImage] = useState<File>();
   const [error, setError] = useState("");
 
-  if (!session.data?.user) {
+  if (!session.data?.user && session.status != "loading") {
     redirect("/");
   }
+  
   useEffect(() => {
     if (user?.id) {
       const downloadData = async () => {

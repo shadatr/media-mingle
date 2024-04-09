@@ -5,18 +5,17 @@ import { useSession } from "next-auth/react";
 import { SinglePostType } from "@/app/types/types";
 import PostFeed from "@/app/components/PostFeed";
 import LoadingIcons from "react-loading-icons";
-import { redirect } from 'next/navigation';
+import { redirect } from "next/navigation";
 
 const page = () => {
-  const session = useSession({ required: false });
+  const session = useSession({ required: true });
   const user = session.data?.user;
   const [posts, setPosts] = useState<SinglePostType[]>([]);
   const [loaded, setLoaded] = useState(false);
 
-  if (!session.data?.user) {
+  if (!session.data?.user && session.status != "loading") {
     redirect("/");
   }
-
   useEffect(() => {
     const downloadData = async () => {
       if (user?.id != undefined) {
@@ -48,9 +47,11 @@ const page = () => {
         <h1 className="lg:text-lg sm:text-md font-bold text-gray2 ">Feed</h1>
         <div className="border-t  border-gray3 py-2 lg:w-[700px] sm:w-[350px]" />
         {posts.length > 0 ? (
-          posts.map((post) => <PostFeed id={post.id} />)
+          posts.map((post, index) => <PostFeed id={post.id} key={index} />)
         ) : (
-          <span className="text-md font-bold text-gray2">No posts posted yet!</span>
+          <span className="text-md font-bold text-gray2">
+            No posts posted yet!
+          </span>
         )}
       </div>
     </div>

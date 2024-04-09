@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { BsPersonCircle, BsThreeDots } from "react-icons/bs";
-import LoadingIcons from "react-loading-icons";
 import { TiDelete } from "react-icons/ti";
 import { FaRegComment } from "react-icons/fa6";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
@@ -11,6 +10,12 @@ import { PostType } from "../types/types";
 import { supabase } from "../api/supabase";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  Button,
+} from "@nextui-org/react";
 
 const PostFeed = ({
   id,
@@ -97,7 +102,9 @@ const PostFeed = ({
   };
 
   const handledelete = (id: number) => {
-    axios.delete(`/api/post/${id}`).then(()=> toast.success('deleted successfully') );
+    axios
+      .delete(`/api/post/${id}`)
+      .then(() => toast.success("deleted successfully"));
     setRefresh(!refresh);
     if (onPostDelete) {
       onPostDelete();
@@ -107,7 +114,7 @@ const PostFeed = ({
   const handleLike = (postId: number) => {
     const data = {
       user_id: sessionUser?.id,
-      post_id: postId, // Use the postId parameter passed to the function
+      post_id: postId,
     };
     try {
       axios.post(`/api/like/${postId}`, data);
@@ -140,23 +147,26 @@ const PostFeed = ({
       <Link href={`/user/post/${id}`}>
         <div className="flex flex-row justify-between">
           <div>
-            <Link href={`/user/personal-profile/${user?.id}`} className="flex my-3 mx-5">
-                {user?.profile_picture ? (
-                  <span
-                    style={{ width: "40px", height: "40px" }}
-                    className="inline-block rounded-full overflow-hidden mr-5"
-                  >
-                    <img
-                      src={user.profile_picture}
-                      alt="Selected"
-                      className="w-full h-full object-cover"
-                    />
-                  </span>
-                ) : (
-                  <span className="mr-5">
-                    <BsPersonCircle size="40" />
-                  </span>
-                )}
+            <Link
+              href={`/user/personal-profile/${user?.id}`}
+              className="flex my-3 mx-5"
+            >
+              {user?.profile_picture ? (
+                <span
+                  style={{ width: "40px", height: "40px" }}
+                  className="inline-block rounded-full overflow-hidden mr-5"
+                >
+                  <img
+                    src={user.profile_picture}
+                    alt="Selected"
+                    className="w-full h-full object-cover"
+                  />
+                </span>
+              ) : (
+                <span className="mr-5">
+                  <BsPersonCircle size="40" />
+                </span>
+              )}
               <span>
                 <h1 className="font-bold">{user?.name}</h1>
                 <h2 className="text-xsm">{user?.username}</h2>
@@ -194,42 +204,41 @@ const PostFeed = ({
               )}
             </span>
           </div>
-          <span className="p-2 cursor-pointer">
-            <BsThreeDots
-              color="gray"
-              size="20"
-              onClick={(event: MouseEvent) => {
-                event.stopPropagation();
-                event.preventDefault();
-                togglePopover(post.post[0].id);
-              }}
-            />
-            {isPopoverOpen &&
-              post.post[0].id === isPopoverOpenComment &&
-              post.post[0].user_id == sessionUser?.id && (
-                <div
-                  ref={popoverRef}
-                  className="absolute bg-primary rounded-md shadow-lg"
-                >
-                  <button
-                    className="block text-red-500 hover:text-red-700 p-2"
-                    onClick={(event) => {
+          {post.post[0].user_id == sessionUser?.id && (
+            <Popover placement="bottom" offset={5} showArrow className="bg-transparent">
+            <PopoverTrigger>
+                <Button className="bg-transparent">
+                  <BsThreeDots
+                    color="gray"
+                    size="20"
+                    onClick={(event: MouseEvent) => {
                       event.stopPropagation();
                       event.preventDefault();
-                      handledelete(post.post[0].id);
-                      setIsPopoverOpen(false);
+                      togglePopover(post.post[0].id);
                     }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              )}
-          </span>
+                  />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className=" bg-transparent">
+                <Button
+                  className="block text-red-500 hover:text-red-700 p-2 bg-blue2"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    event.preventDefault();
+                    handledelete(post.post[0].id);
+                    setIsPopoverOpen(false);
+                  }}
+                >
+                  Delete
+                </Button>
+              </PopoverContent>
+            </Popover>
+        
+          )}
         </div>
       </Link>
-      <div className="w-full flex items-center justify-center flex-col">
-        <div className="border-t  w-full border-gray3" />
-        <span className="flex justify-between items-center w-[200px] py-1 text-md text-gray2">
+      <div className="w-full flex flex-col px-5">
+        <span className="flex justify-between items-center w-[100px] py-1 text-md text-gray2">
           <div className="flex items-center">
             {post?.likes.length}
             {post?.likes.find((item) => item.user_id == sessionUser?.id) &&
@@ -238,14 +247,14 @@ const PostFeed = ({
                 size="20"
                 color="red"
                 className="cursor-pointer mx-1"
-                onClick={() => handleLike(id)} // Pass the correct post id here
+                onClick={() => handleLike(id)}
               />
             ) : (
               <AiOutlineHeart
                 size="20"
                 color="gray"
                 className="cursor-pointer mx-1"
-                onClick={() => handleLike(id)} // Pass the correct post id here
+                onClick={() => handleLike(id)}
               />
             )}
           </div>

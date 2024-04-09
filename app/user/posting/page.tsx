@@ -16,7 +16,7 @@ const UploadImage = () => {
   const [postText, setPostText] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
 
-  if (!session.data?.user) {
+  if (!session.data?.user && session.status != "loading") {
     redirect("/");
   }
   

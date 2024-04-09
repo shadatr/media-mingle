@@ -17,7 +17,7 @@ const page = ({ params }: { params: { id: number } }) => {
     user_id: params.id,
   });
 
-  if (!session.data?.user) {
+  if (!session.data?.user && session.status != "loading") {
     redirect("/");
   }
   useEffect(() => {
