@@ -1,23 +1,28 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { FetchPosts } from "./FetchPosts";
 import { useSession } from "next-auth/react";
 import { BsPersonCircle, BsThreeDots } from "react-icons/bs";
 import axios from "axios";
 import { PostType, UserType } from "../types/types";
 import { toast } from "react-hot-toast";
 import { supabase } from "../api/supabase";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  Button,
+} from "@nextui-org/react";
+import Link from "next/link";
 
 const PostComments = ({ id }: { id: number }) => {
   const session = useSession({ required: true });
   const user = session.data?.user;
+
   const [fetchPosts, setFetchPosts] = useState<PostType>();
   const [userComments, setUserComments] = useState<UserType[][]>([]);
   const [commentText, setCommentText] = useState("");
   const [isPopoverOpen, setIsPopoverOpen] = useState(true);
-  const [isPopoverOpenComment, setIsPopoverOpenComment] = useState(0);
   const [refresh, setRefresh] = useState(false);
-  const popoverRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -69,12 +74,7 @@ const PostComments = ({ id }: { id: number }) => {
     return () => {
       changes.unsubscribe();
     };
-  }, [id,refresh]);
-
-  const togglePopover = (id: number) => {
-    setIsPopoverOpen(!isPopoverOpen);
-    setIsPopoverOpenComment(id);
-  };
+  }, [id, refresh]);
 
   const handelPost = () => {
     const data = {
@@ -102,23 +102,23 @@ const PostComments = ({ id }: { id: number }) => {
   };
 
   return (
-    <div className="lg:w-[700px] sm:w-[300px] lg:text-sm sm:text-xsm">
+    <div className="lg:w-[700px] sm:w-[350px] lg:text-sm sm:text-xsm">
       <div className="flex items-center  m-5">
         <span>
-
-        {user?.profile_picture ? (
-          <span
-            className="inline-block rounded-full overflow-hidden lg:w-[40px] lg:h-[40px] sm:w-[30px] sm:h-[30px]"
-          >
-            <img
-              src={user.profile_picture}
-              alt="Selected"
-              className="w-full h-full object-cover"
-            />
-          </span>
-        ) : (
-          <BsPersonCircle size="40" />
-        )}
+          {user?.profile_picture ? (
+            <span className="inline-block rounded-full overflow-hidden lg:w-[40px] lg:h-[40px] sm:w-[30px] sm:h-[30px]">
+              <img
+                src={user.profile_picture}
+                alt="Selected"
+                className="w-full h-full object-cover"
+              />
+            </span>
+          ) : (
+            <div>
+              <BsPersonCircle size="40" className="sm:hidden lg:flex" />
+              <BsPersonCircle size="25" className="sm:flex lg:hidden" />
+            </div>
+          )}
         </span>
         <span className="px-2">
           <textarea
@@ -144,12 +144,13 @@ const PostComments = ({ id }: { id: number }) => {
           return (
             <div>
               <div className="flex flex-row justify-between">
-                <span className="flex items-center m-5" key={comment.id}>
-                  <p className="w-16">
+                <span
+                  className="flex items-center lg:m-5 sm:m-3"
+                  key={comment.id}
+                >
+                  <Link href={`/user/personal-profile/${comment.user_id}`}  className="lg:w-16 sm:w-10">
                     {commentUser?.profile_picture ? (
-                      <span
-                        className="inline-block rounded-full overflow-hidden lg:w-[40px] lg:h-[40px] sm:w-[30px] sm:h-[30px]"
-                      >
+                      <span className="inline-block rounded-full overflow-hidden lg:w-[40px] lg:h-[40px] sm:w-[25px] sm:h-[25px]">
                         <img
                           src={commentUser.profile_picture}
                           alt="Selected"
@@ -157,44 +158,60 @@ const PostComments = ({ id }: { id: number }) => {
                         />
                       </span>
                     ) : (
-                      <BsPersonCircle size="40" />
+                      <div>
+                        <BsPersonCircle
+                          size="40"
+                          className="sm:hidden lg:flex"
+                        />
+                        <BsPersonCircle
+                          size="25"
+                          className="sm:flex lg:hidden"
+                        />
+                      </div>
                     )}
-                  </p>
+                  </Link>
                   <div className="flex flex-col">
-                    <span className="flex items-center gap-2">
-                      <h1 className="text-sm font-bold">{commentUser?.name}</h1>
-                      <h2 className="text-xsm text-gray2">
+                    <Link href={`/user/profile/${comment.user_id}`} className="flex items-center gap-2">
+                      <h1 className="lg:text-sm sm:text-xsm font-bold">
+                        {commentUser?.name}
+                      </h1>
+                      <h2 className="lg:text-xsm sm:text-xxsm  text-gray2">
                         {commentUser?.username}
                       </h2>
+                    </Link>
+                    <span className="lg:text-sm sm:text-xsm ">
+                      {comment.text}
                     </span>
-                    <span>{comment.text}</span>
                   </div>
                 </span>
                 <span className="p-2 cursor-pointer">
-                  <BsThreeDots
-                    color="gray"
-                    size="20"
-                    onClick={() => togglePopover(comment.id)}
-                  />
-                  {isPopoverOpen &&
-                    comment.id === isPopoverOpenComment &&
-                    comment.user_id == user?.id &&
-                    fetchPosts.post[0].user_id == user?.id && (
-                      <div
-                        ref={popoverRef}
-                        className="absolute bg-primary rounded-md shadow-lg"
-                      >
-                        <button
-                          className="block text-red-500 hover:text-red-700 p-2"
-                          onClick={() => {
+                  {comment.user_id == user?.id && (
+                    <Popover
+                      placement="bottom"
+                      offset={0}
+                      showArrow
+                      className="bg-transparent fixed top-0"
+                    >
+                      <PopoverTrigger>
+                        <Button className="bg-transparent">
+                          <BsThreeDots color="gray" size="20" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className=" bg-transparent">
+                        <Button
+                          className="block text-red-500 hover:text-red-700 p-2 px-5 bg-blue2 rounded-2xl "
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            event.preventDefault();
                             handledelete(comment.id);
                             setIsPopoverOpen(false);
                           }}
                         >
                           Delete
-                        </button>
-                      </div>
-                    )}
+                        </Button>
+                      </PopoverContent>
+                    </Popover>
+                  )}
                 </span>
               </div>
               <div className="border-t  w-full border-gray3" />

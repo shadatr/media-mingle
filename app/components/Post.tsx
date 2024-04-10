@@ -11,6 +11,12 @@ import { PostType } from "../types/types";
 import { supabase } from "../api/supabase";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  Button,
+} from "@nextui-org/react";
 
 const Post = ({
   id,
@@ -21,13 +27,10 @@ const Post = ({
 }) => {
   const session = useSession({ required: true });
   const sessionUser = session.data?.user;
-  const [isPopoverOpen, setIsPopoverOpen] = useState(true);
-  const [isPopoverOpenComment, setIsPopoverOpenComment] = useState(0);
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
   const [post, setPost] = useState<PostType | null>(null);
   const [refresh, setRefresh] = useState(false);
-  const popoverRef = useRef<HTMLDivElement | null>(null);
   const user = post?.user[0];
   useEffect(() => {
     async function downloadData() {
@@ -90,11 +93,6 @@ const Post = ({
     };
   }, [refresh]);
 
-  const togglePopover = (id: number) => {
-    setIsPopoverOpen(!isPopoverOpen);
-    setIsPopoverOpenComment(id);
-  };
-
   const handledelete = (id: number) => {
     axios.delete(`/api/post/${id}`).then(()=> toast.success('deleted successfully') );
     if (onPostDelete) {
@@ -140,8 +138,8 @@ const Post = ({
   }
 
   return (
-    <div className="lg:w-[700px] sm:w-[300px]">
-      <div className="flex flex-row justify-between">
+    <div className="lg:w-[700px] sm:w-[350px]">
+      <div className="flex items-start justify-between">
         <div>
           <Link href={`/user/personal-profile/${user?.id}`} className="flex my-3 mx-5 items-center">
             <p className="mr-5">
@@ -156,15 +154,18 @@ const Post = ({
                   />
                 </span>
               ) : (
-                <BsPersonCircle size="40" />
+                <div>
+                  <BsPersonCircle size="40" className="sm:hidden lg:flex" />
+                  <BsPersonCircle size="25" className="sm:flex lg:hidden" />
+                </div>
               )}
             </p>
             <span className="items-center">
-              <h1 className="text-ms font-bold">{user?.name}</h1>
-              <h2 className="text-sm">{user?.username}</h2>
+              <h1 className="lg:text-md sm:text-sm font-bold">{user?.name}</h1>
+              <h2 className="lg:text-sm sm:text-xxsm">{user?.username}</h2>
             </span>
           </Link>
-          <span className="text-center mx-5">{post?.post[0].text}</span>
+          <span className="text-center mx-5 lg:text-sm sm:text-xsm">{post?.post[0].text}</span>
           {isModalOpen && (
             <div className="modal ">
               <div className="modal-content ">
@@ -196,53 +197,64 @@ const Post = ({
             )}
           </span>
         </div>
-        <span className="p-2 cursor-pointer">
-          <BsThreeDots
-            color="gray"
-            size="20"
-            onClick={() => togglePopover(post.post[0].id)}
-          />
-          {isPopoverOpen &&
-            post.post[0].id === isPopoverOpenComment &&
-            post.post[0].user_id == sessionUser?.id &&
-             (
-              <div
-                ref={popoverRef}
-                className="absolute bg-primary rounded-md shadow-lg"
-              >
-                <button
-                  className="block text-red-500 hover:text-red-700 p-2"
-                  onClick={() => {
+        {post.post[0].user_id == sessionUser?.id && (
+            <Popover placement="bottom" offset={0} showArrow className="bg-transparent ">
+            <PopoverTrigger>
+                <Button className="bg-transparent">
+                  <BsThreeDots
+                    color="gray"
+                    size="20"
+                  />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className=" bg-transparent">
+                <Button
+                  className="block text-red-500 hover:text-red-700 p-2 px-5 bg-blue2 rounded-2xl "
+                  onClick={(event) => {
                     handledelete(post.post[0].id);
-                    setIsPopoverOpen(false);
                   }}
                 >
                   Delete
-                </button>
-              </div>
-            )}
-        </span>
+                </Button>
+              </PopoverContent>
+            </Popover>
+          )}
       </div>
-      <div className="w-full flex items-center justify-center flex-col">
-        <div className="border-t  w-full border-gray3" />
-        <span className="flex justify-between items-center w-[200px] py-1 text-md text-gray2">
+      <div className="w-full flex flex-col">
+        <span className="flex justify-between items-center w-[100px] gap-4 lg:text-md sm:text-sm text-gray2 lg:px-6 sm:px-3 pb-3">
           <div className="flex items-center">
             {post?.likes.length}
             {post?.likes.find((item) => item.user_id == sessionUser?.id) &&
             post.likes.find((i) => i.post_id == id) ? (
-              <AiFillHeart
+              <div>
+               <AiFillHeart
+                className="sm:hidden lg:flex mx-1 hover:cursor-pointer" 
                 size="20"
                 color="red"
-                className="cursor-pointer mx-1"
-                onClick={() => handleLike(id)} // Pass the correct post id here
+                onClick={() => handleLike(id)} 
               />
+             <AiFillHeart
+                className="sm:flex lg:hidden mx-1  hover:cursor-pointer"
+                size="15"
+                color="red"
+                onClick={() => handleLike(id)} 
+              />
+                </div>
             ) : (
-              <AiOutlineHeart
+              <div>
+                <AiOutlineHeart
+                className="sm:hidden lg:flex mx-1" 
                 size="20"
                 color="gray"
-                className="cursor-pointer mx-1"
-                onClick={() => handleLike(id)} // Pass the correct post id here
+                onClick={() => handleLike(id)} 
               />
+              <AiOutlineHeart
+                className="sm:flex lg:hidden mx-1"
+                size="15"
+                color="gray"
+                onClick={() => handleLike(id)} 
+              />
+                </div>
             )}
           </div>
           <div className="flex items-center justify-center ">
@@ -250,8 +262,13 @@ const Post = ({
             <FaRegComment
               size="20"
               color="gray"
-              className="cursor-pointer mx-2"
-            />
+              className="sm:hidden lg:flex mx-2" 
+              />
+            <FaRegComment
+              size="15"
+              color="gray"
+              className="sm:flex lg:hidden mx-2"
+              />
           </div>
         </span>
         <div className="border-t w-full border-gray3 " />

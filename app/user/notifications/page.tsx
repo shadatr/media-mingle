@@ -23,12 +23,11 @@ const page = () => {
       if (user?.id != undefined) {
         const res = await axios.get(`/api/notifications/${user.id}`);
         const data: NotificationType[] = res.data.message;
-        const sortedData = data.flat().sort((a, b) => b.notification.id - a.notification.id);
-        console.log(sortedData)
+        const sortedData = data.flat().sort((a, b) => a.notification.id - b.notification.id);
 
         setNotifications(sortedData);
         setLoadings(true);
-        data.flat().map((ntf)=>{
+        data?.flat().map((ntf)=>{
           axios.put(`/api/notifications/${ntf.notification.id}`)
         })
       }
@@ -51,7 +50,7 @@ const page = () => {
   }
 
   const sortedNotifications: NotificationType[] = notifications.sort(
-    (a, b) => a.notification.id - b.notification.id
+    (a, b) => b.notification.id - a.notification.id
   );
 
   return (
@@ -59,10 +58,10 @@ const page = () => {
       {loading ? (
         <div className="flex h-[800px] overflow-y-auto">
           <div className=" flex flex-col">
-            {sortedNotifications.map((ntf) => {
+            {sortedNotifications.map((ntf,index) => {
               if (ntf.notification.type == "follow") {
                 return (
-                  <Link href={`/user/personal-profile/${ntf.user.id}`}>
+                  <Link href={`/user/personal-profile/${ntf.user.id}`} key={index}>
                     <div className="flex items-center hover:bg-primary hover:rounded-[20px] py-4 mx-5 lg:w-[400px] sm:w-[300px]">
                       <span className="mx-3">
                         {ntf.user?.profile_picture ? (
@@ -95,7 +94,7 @@ const page = () => {
                 ntf.notification.type == "like"
               ) {
                 return (
-                  <Link href={`/user/post/${ntf.notification.post_id}`}>
+                  <Link href={`/user/post/${ntf.notification.post_id}`} key={index}>
                     <div className="flex items-center hover:bg-primary hover:rounded-[20px] py-4 mx-5 lg:w-[400px] sm:w-[300px]">
                       <span className="mx-3">
                         {ntf.user?.profile_picture ? (

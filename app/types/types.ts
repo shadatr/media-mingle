@@ -65,18 +65,18 @@ export type UserDataType = {
     profile_picture: string | null;
     username: string | null;
     bio: string | null;
-  }[];
+  };
   followers: {
     followed_id?: number | null;
     follower_id?: number | null;
     id?: number;
   }[];
-  following: {
+  following?: {
     followed_id?: number | null;
     follower_id?: number | null;
     id?: number;
   }[];
-  posts: { id: number; text: string | null; user_id: number | null }[];
+  posts?: { id: number; text: string | null; user_id: number | null }[];
 };
 
 export type UserMessagesType = {

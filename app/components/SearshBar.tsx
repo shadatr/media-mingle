@@ -41,10 +41,10 @@ const SearshBar = () => {
           onChange={(e) => {
             search(), setShowResults(true);
           }}
-          className="bg-blue2 border border-gray3 rounded-[20px] lg:px-4 lg:py-3 sm:px-3 sm:py-1 lg:w-[700px] sm:w-[270px] outline-none"
+          className="bg-blue2 border border-gray3 rounded-[20px] px-4 lg:py-3 sm:py-2 lg:w-[700px] sm:w-[270px] outline-none"
         />
         {foundUsers.length > 0 && showResults && (
-          <div className="border  border-gray3 rounded-[20px] fixed bg-blue3 lg:w-[700px] sm:w-[270px] sm:mt-8 lg:mt-12" ref={searchedUser}>
+          <div className="border  border-gray3 rounded-[20px] absolute bg-blue3 lg:w-[700px] sm:w-[270px] sm:mt-8 lg:mt-12 z-40 h-[500px] overflow-y-auto" ref={searchedUser}>
             {foundUsers.map((user) => (
               <Link href={`/user/personal-profile/${user.id}`} className="flex items-center m-2 lg:mx-5 hover:bg-primary hover:rounded-[20px] lg:p-3 sm:p-1">
                 <p className="mx-2">

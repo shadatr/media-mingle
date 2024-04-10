@@ -80,7 +80,6 @@ export async function PUT(request: Request) {
 
   try {
     const res=await supabase.from("tb_messages").update({'seen': true}).eq('reciever_id', data.reciever_id).eq('sender_id',data.sender_id)
-    console.log(res)
     return new Response(
       JSON.stringify({ message: "Account created successfully" }),
       {

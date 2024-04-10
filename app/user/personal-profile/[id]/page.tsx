@@ -16,15 +16,18 @@ const page = ({ params }: { params: { id: number } }) => {
   const sessionUser = session.data?.user;
   const [user, setUser] = useState<UserDataType>();
   const [refresh, setRefresh] = useState(false);
+
   if (!session.data?.user && session.status != "loading") {
     redirect("/");
   }
+
   useEffect(() => {
     async function downloadData() {
       try {
         const response = await axios.get(`/api/user/${params.id}`);
         const data: UserDataType = response.data.message;
         setUser(data);
+        console.log(data)
       } catch (error) {
         console.log("Error downloading data: ", error);
       }
@@ -32,7 +35,8 @@ const page = ({ params }: { params: { id: number } }) => {
 
     downloadData();
   }, []);
-  const userdata = user && user.user[0];
+
+  const userdata = user && user.user;
   const followersdata = user && user?.followers;
   const followingdata = user && user?.following;
   const postsdata = user && user?.posts;
@@ -184,7 +188,7 @@ const page = ({ params }: { params: { id: number } }) => {
         <div className="w-[100%] justify-center items-center mt-10">
           <h1 className="text-lg font-bold text-gray2">Posts</h1>
           <div className="border-t w-full border-gray3 py-2" />
-          {postsdata?.map((post) => {
+          {postsdata?.length?postsdata?.map((post) => {
             if (post.id) {
               return (
                 <PostFeed
@@ -194,7 +198,7 @@ const page = ({ params }: { params: { id: number } }) => {
                 />
               );
             }
-          })}
+          }):<div className="font-bold ">There is no posts posted yet!</div>}
         </div>
       </div>
     </div>

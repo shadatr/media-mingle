@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BsPersonCircle, BsThreeDots } from "react-icons/bs";
 import { TiDelete } from "react-icons/ti";
 import { FaRegComment } from "react-icons/fa6";
@@ -26,13 +26,10 @@ const PostFeed = ({
 }) => {
   const session = useSession({ required: true });
   const sessionUser = session.data?.user;
-  const [isPopoverOpen, setIsPopoverOpen] = useState(true);
-  const [isPopoverOpenComment, setIsPopoverOpenComment] = useState(0);
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
   const [post, setPost] = useState<PostType | null>(null);
   const [refresh, setRefresh] = useState(false);
-  const popoverRef = useRef<HTMLDivElement | null>(null);
   const user = post?.user[0];
 
   useEffect(() => {
@@ -96,10 +93,6 @@ const PostFeed = ({
     };
   }, [refresh]);
 
-  const togglePopover = (id: number) => {
-    setIsPopoverOpen(!isPopoverOpen);
-    setIsPopoverOpenComment(id);
-  };
 
   const handledelete = (id: number) => {
     axios
@@ -145,7 +138,7 @@ const PostFeed = ({
   return (
     <div className="lg:w-[700px] sm:w-[350px] sm:text-xsm lg:text-sm ">
       <Link href={`/user/post/${id}`}>
-        <div className="flex flex-row justify-between">
+        <div className="flex justify-between items-start lg:px-5 pt-2">
           <div>
             <Link
               href={`/user/personal-profile/${user?.id}`}
@@ -153,8 +146,7 @@ const PostFeed = ({
             >
               {user?.profile_picture ? (
                 <span
-                  style={{ width: "40px", height: "40px" }}
-                  className="inline-block rounded-full overflow-hidden mr-5"
+                  className="inline-block rounded-full overflow-hidden mr-5 lg:w-[40px] lg:h-[40px] sm:w-[25px] sm:h-[25px]"
                 >
                   <img
                     src={user.profile_picture}
@@ -192,9 +184,10 @@ const PostFeed = ({
             )}
             <span className={`grid grid-cols-2 my-5 gap-1 mx-5`}>
               {post?.picture?.map(
-                (fileInfo) =>
+                (fileInfo,index) =>
                   fileInfo && (
                     <img
+                    key={index}
                       src={fileInfo.publicUrl}
                       alt="Selected"
                       className={`rounded-[20px] lg:w-[330px] sm:[200px] cursor-pointer`}
@@ -205,40 +198,33 @@ const PostFeed = ({
             </span>
           </div>
           {post.post[0].user_id == sessionUser?.id && (
-            <Popover placement="bottom" offset={5} showArrow className="bg-transparent">
+            <Popover placement="bottom" offset={0} showArrow className="bg-transparent fixed top-0">
             <PopoverTrigger>
                 <Button className="bg-transparent">
                   <BsThreeDots
                     color="gray"
                     size="20"
-                    onClick={(event: MouseEvent) => {
-                      event.stopPropagation();
-                      event.preventDefault();
-                      togglePopover(post.post[0].id);
-                    }}
                   />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className=" bg-transparent">
                 <Button
-                  className="block text-red-500 hover:text-red-700 p-2 bg-blue2"
+                  className="block text-red-500 hover:text-red-700 p-2 px-5 bg-blue2 rounded-2xl "
                   onClick={(event) => {
                     event.stopPropagation();
                     event.preventDefault();
                     handledelete(post.post[0].id);
-                    setIsPopoverOpen(false);
                   }}
                 >
                   Delete
                 </Button>
               </PopoverContent>
             </Popover>
-        
           )}
         </div>
       </Link>
-      <div className="w-full flex flex-col px-5">
-        <span className="flex justify-between items-center w-[100px] py-1 text-md text-gray2">
+      <div className="w-full flex flex-col ">
+        <span className="flex justify-between items-center w-[100px] gap-4 text-md text-gray2 lg:px-10 sm:px-4 pb-3">
           <div className="flex items-center">
             {post?.likes.length}
             {post?.likes.find((item) => item.user_id == sessionUser?.id) &&

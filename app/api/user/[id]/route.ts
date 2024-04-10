@@ -35,7 +35,7 @@ export async function GET(
       .eq("user_id", params.id);
 
       const data5 ={
-        user:data.data,
+        user:data.data&&data.data[0],
         followers: data2.data,
         following:data3.data,
         posts:data4.data

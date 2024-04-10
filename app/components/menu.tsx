@@ -29,6 +29,7 @@ export default function Menu() {
 
   return (
     <div className="fixed">
+      <div className="flex">
       <div className="lg:hidden">
         <Sheet>
           <SheetTrigger>
@@ -63,7 +64,7 @@ export default function Menu() {
         <SheetClose asChild>
           <Link
             href={"/user/posting"}
-            className="bg-blue1 px-10 py-3 rounded-[20px] font-bold mx-10"
+            className="bg-blue1 px-10 py-3 rounded-[20px] font-bold mx-14"
           >
             Post
           </Link>
@@ -210,6 +211,8 @@ export default function Menu() {
             <span>Logout</span>
           </button>
         </div>
+      </div>
+        <div className="border-r h-screen border-gray3 px-5 sm:hidden lg:flex"/>
       </div>
     </div>
   );

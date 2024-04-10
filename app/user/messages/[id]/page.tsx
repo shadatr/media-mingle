@@ -49,19 +49,21 @@ const page = ({ params }: { params: { id: number } }) => {
   
 
   const message = messages.find((item) => item.user.id == params.id);
-
+  
+  if (!messages.length) {
+    return (
+      <div className="items-center justify-center flex h-[100%] mt-[200px]">
+        <LoadingIcons.TailSpin
+          stroke="white"
+          width="100"
+          height="100"
+          speed={0.8}
+        />
+      </div>
+    );
+  }
   return (
-    <div>
-      {messages==null ? (
-        <div className="items-center justify-center flex h-[100%] mt-[200px]">
-          <LoadingIcons.TailSpin
-            stroke="white"
-            width="100"
-            height="100"
-            speed={0.8}
-          />
-        </div>
-      ) : (
+ 
         <div className="w-[100%] flex justify-center lg:ml-20">
           <div className=" flex ">
             <span className="sm:hidden lg:flex">
@@ -174,8 +176,7 @@ const page = ({ params }: { params: { id: number } }) => {
             </div>
           </div>
         </div>
-      )}
-    </div>
+ 
   );
 };
 

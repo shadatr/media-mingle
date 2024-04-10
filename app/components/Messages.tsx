@@ -1,10 +1,8 @@
 "use client";
-import axios from "axios";
 import { useSession } from "next-auth/react";
 import React from "react";
 import { BsPersonCircle } from "react-icons/bs";
 import Link from "next/link";
-import LoadingIcons from "react-loading-icons";
 import { FetchMessages } from "./FetchMessages";
 
 const Messages = () => {
