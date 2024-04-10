@@ -14,6 +14,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Switch from "@mui/material/Switch";
 import { createHash } from "crypto";
 import { redirect } from "next/navigation";
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 const label = { inputProps: { "aria-label": "Switch demo" } };
 
@@ -21,9 +22,9 @@ const page = () => {
   const session = useSession({ required: false });
   const user = session.data?.user;
   const [selectedUser, setSelectedUser] = useState<UserType>();
-  const [currentPassword, setcurrentPassword] = useState('');
-  const [newPassword, setnewPassword] = useState('');
-  const [newConPassword, setnewConPassword] = useState('');
+  const [currentPassword, setcurrentPassword] = useState("");
+  const [newPassword, setnewPassword] = useState("");
+  const [newConPassword, setnewConPassword] = useState("");
   const [userData, setUserData] = useState<UserType>();
   const [activeTab, setActiveTab] = useState<string>("");
   const [selectedImage, setSelectedImage] = useState<File>();
@@ -32,7 +33,7 @@ const page = () => {
   if (!session.data?.user && session.status != "loading") {
     redirect("/");
   }
-  
+
   useEffect(() => {
     if (user?.id) {
       const downloadData = async () => {
@@ -50,7 +51,6 @@ const page = () => {
   };
 
   const handleUpdateData = (key: keyof UserType, value: string) => {
-    
     if (selectedUser) {
       setUserData({
         ...selectedUser,
@@ -61,58 +61,60 @@ const page = () => {
 
   const handleUpdatePassword = () => {
     const passwordHash = createHash("sha256")
-    .update(currentPassword)
-    .digest("hex");
-    if(passwordHash!=userData?.password){
-      setError('Current password is wrong')
+      .update(currentPassword)
+      .digest("hex");
+    if (passwordHash != userData?.password) {
+      setError("Current password is wrong");
       return;
     }
-    if(newPassword!=newConPassword){
-      setError('New password does not match')
+    if (newPassword != newConPassword) {
+      setError("New password does not match");
       return;
     }
-    setError('')
+    setError("");
     if (selectedUser) {
       setUserData({
         ...selectedUser,
         password: newPassword,
       });
-      handleSubmitData()
+      handleSubmitData();
     }
   };
 
   const handleSubmitData = () => {
-    try{
+    try {
       axios.put(`/api/userData/${user?.id}`, userData);
       setSelectedUser(userData);
-      toast.success('updated succesfully')
-    }
-    catch{
-      toast.error('error')
+      toast.success("updated succesfully");
+    } catch {
+      toast.error("error");
     }
   };
 
   const handleSubmitImage = () => {
     const formData = new FormData();
-    try{
-    if ( user?.id&&selectedImage) {
-      formData.append("imageFile", selectedImage);
-      formData.append("name", selectedImage.name);
-      formData.append("user_id", (user?.id).toString());
-    }
-    axios.put(`/api/userImage`, formData);
-    toast.success('updated succesfully')
-    }
-    catch{
-      toast.error('error')
+    try {
+      if (user?.id && selectedImage) {
+        formData.append("imageFile", selectedImage);
+        formData.append("name", selectedImage.name);
+        formData.append("user_id", (user?.id).toString());
+      }
+      axios.put(`/api/userImage`, formData);
+      toast.success("updated succesfully");
+    } catch {
+      toast.error("error");
     }
   };
 
   return (
-    <div className="flex justify-center items-center w-[105%]">
+    <div className="flex justify-center items-center w-[100%]">
       {selectedUser ? (
         <div className="flex">
-          <div className={`flex flex-col lg:w-[400px] sm:w-[300px] lg:text-sm sm:text-xsm ${activeTab.length>0? "sm:hidden lg:flex":" lg:flex"}`}>
+          <div
+            className={`flex flex-col lg:w-[400px] sm:w-[350px] lg:text-sm sm:text-xsm ${
+              activeTab.length > 0 ? "sm:hidden lg:flex" : " lg:flex"
+            }`}
+          >
             <span
               onClick={() => handleTabClick("username")}
               className="hover:bg-primary hover:rounded-[20px] cursor-pointer px-6 py-3"
@@ -177,10 +179,24 @@ const page = () => {
               <h1>{selectedUser.gender || "Not selected"}</h1>
             </span>
           </div>
-          <div className={`border-r h-screen border-gray3  ${activeTab.length>0? "sm:hidden lg:flex":""}`} />
-          <div className={`mx-10  ${activeTab.length<0? "sm:hidden sm:w-[300px] lg:w-[300px] lg:flex":"lg:flex lg:w-[300px] "}`}>
+          <div className={`border-r border-gray3 h-screen sm:hidden lg:flex `} />
+          <div
+            className={`lg:mx-10 sm:m-1  ${
+              activeTab.length < 0
+                ? "sm:hidden sm:w-[350px] lg:flex"
+                : "lg:flex lg:w-[300px] "
+            }`}
+          >
+            {activeTab.length > 0 && (
+              <div
+                className="sm:flex lg:hidden w-full items-start"
+                onClick={() => setActiveTab("")}
+              >
+                <IoMdArrowRoundBack size="20" />
+              </div>
+            )}
             {activeTab == "username" && (
-              <span className="flex flex-col w-full">
+              <span className="flex flex-col w-[350px]">
                 <p className="m-2 font-bold">Username</p>
                 <input
                   value={userData?.username || ""}
@@ -213,7 +229,7 @@ const page = () => {
               </span>
             )}
             {activeTab == "name" && (
-              <span className="flex flex-col lg:w-full ">
+              <span className="flex flex-col w-[350px] ">
                 <p className="m-2 font-bold">Name</p>
                 <input
                   value={userData?.name || ""}
@@ -235,7 +251,7 @@ const page = () => {
               </span>
             )}
             {activeTab == "email" && (
-              <span className="flex flex-col w-full ">
+              <span className="flex flex-col w-[350px]">
                 <p className="m-2 font-bold">Email address</p>
                 <input
                   value={userData?.email || ""}
@@ -269,7 +285,7 @@ const page = () => {
               </span>
             )}
             {activeTab == "profile_picture" && (
-              <span className="flex flex-col w-full ">
+              <span className="flex flex-col w-[350px]">
                 <p className="m-2 font-bold">Profile picture</p>
                 <label htmlFor="fileInput">
                   {userData?.profile_picture || selectedImage ? (
@@ -317,7 +333,7 @@ const page = () => {
               </span>
             )}
             {activeTab == "birth_date" && (
-              <span className="flex flex-col w-full ">
+              <span className="flex flex-col w-[350px]">
                 <p className="m-2 font-bold">Birth date</p>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={["DatePicker", "DatePicker"]}>
@@ -343,10 +359,10 @@ const page = () => {
               </span>
             )}
             {activeTab == "private" && (
-              <span className="flex flex-col w-full ">
+              <span className="flex flex-col w-[350px]">
                 <p className="m-2 font-bold ">Privacy</p>
                 {userData?.private ? (
-                  <Switch {...label} defaultChecked  />
+                  <Switch {...label} defaultChecked />
                 ) : (
                   <Switch
                     {...label}
@@ -370,7 +386,7 @@ const page = () => {
               </span>
             )}
             {activeTab == "password" && (
-              <span className="flex flex-col w-full gap-4">
+              <span className="flex flex-col w-[350px] gap-4">
                 <p className="m-2 font-bold">Change Password</p>
                 <input
                   placeholder="Enter current password"
@@ -405,7 +421,7 @@ const page = () => {
               </span>
             )}
             {activeTab == "bio" && (
-              <span className="flex flex-col w-full ">
+              <span className="flex flex-col w-[350px]">
                 <p className="m-2 font-bold">Bio</p>
                 <input
                   value={userData?.bio || ""}
@@ -427,16 +443,20 @@ const page = () => {
               </span>
             )}
             {activeTab == "gender" && (
-              <span className="flex flex-col w-full ">
+              <span className="flex flex-col w-[350px]">
                 <p className="m-2 font-bold">Gender</p>
-                <select defaultValue='--' onChange={(e) => {
+                <select
+                  defaultValue="--"
+                  onChange={(e) => {
                     handleUpdateData("gender", e.target.value);
-                  }}  className="flex bg-primary px-4 py-3 rounded-[20px] w-full outline-none border border-gray3">
+                  }}
+                  className="flex bg-primary px-4 py-3 rounded-[20px] w-full outline-none border border-gray3"
+                >
                   <option disabled>--</option>
                   <option>Male</option>
                   <option>Female</option>
                 </select>
-                  <span className="flex w-full justify-end my-3">
+                <span className="flex w-full justify-end my-3">
                   <button
                     className="flex w-[85px] items-center justify-center py-2 bg-blue1 hover:bg-blue2 rounded-[20px] "
                     onClick={() => handleSubmitData()}

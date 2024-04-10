@@ -19,7 +19,6 @@ import {
   SheetContent,
   SheetDescription,
   SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
 
@@ -120,7 +119,7 @@ export default function Menu() {
           <button
             className="hover:bg-primary hover:rounded-[20px] lg:mt-10 flex items-center gap-3 p-3"
             onClick={() => {
-              signOut({ redirect: true });
+              signOut({ redirect: false });
               redirect("/auth/login");
             }}
           >
@@ -203,7 +202,7 @@ export default function Menu() {
           <button
             className="hover:bg-primary hover:rounded-[20px] lg:mt-10 flex items-center gap-3 p-3"
             onClick={() => {
-              signOut({ redirect: true });
+              signOut({ redirect: false });
               redirect("/auth/login");
             }}
           >

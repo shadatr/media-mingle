@@ -63,12 +63,12 @@ const page = () => {
           </span>
         )}
       </div>
-      <div className="top-20 right-0 fixed">
+      <div className="top-20 right-0 fixed sm:hidden lg:flex flex-col">
           <p className="text-md font-bold">who to follow </p>
-        <div className=" bg-primary w-[350px] h-[700px] overflow-y-auto border rounded-[20px] border-gray3">
+        <div className=" w-[350px] h-[700px] overflow-y-auto border rounded-[20px] border-gray3">
           {users.map((usr)=>
           <span
-          className="flex lg:m-5 sm:m-3 gap-2 hover:bg-blue3 py-2 px-5 rounded-2xl"
+          className="flex lg:m-5 sm:m-3 gap-2 hover:bg-primary py-2 px-5 rounded-2xl"
           key={usr.user.id}
         >
           <Link href={`/user/personal-profile/${usr.user.id}`}  className="lg:w-12 sm:w-10">

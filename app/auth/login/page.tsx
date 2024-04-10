@@ -18,10 +18,8 @@ const LoginPage = () => {
       redirect: false,
     });
 
-    if (result?.error == "CredentialsSignin" 
-    || !result?.error) {
+    if (!result?.error||result.error=="SessionRequired") {
       router.push('/user/home'); 
-      
     } 
   };
   
