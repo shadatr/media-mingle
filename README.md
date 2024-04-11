@@ -1,22 +1,14 @@
-# BookItNow
+# MediaMingle
 
-BookItNow is a Next.js web app offering a seamless booking experience inspired by Airbnb. It allows users to list, reserve, and manage accommodations. BookItNow showcases my skills in frontend development, authentication, and database integration.
+MediaMingle is my Twitter-inspired project, featuring posting, commenting, liking, following, messaging, and authentication functionalities. It highlights my skills in frontend development, user interaction, and real-time updates using Supabase.
 
-## Technologies
+## Technologies Used
 
-- **React**
-- **TypeScript**
-- **Tailwind CSS**
-- **Supabase || PostgreSQL**
-- **Next.js**
-
-## Features
-
-- Listing accommodations
-- Reservation system
-- User authentication with Supabase
-- Payment processing with Stripe
-- Database integration with Supabase
+- **React**: Utilized for building the user interface and managing state.
+- **TypeScript**: Ensured type safety and improved code maintainability.
+- **Tailwind CSS**: Used for styling the application with a utility-first approach.
+- **Real-time Supabase**: Leveraged for real-time updates and database functionalities.
+- **Next.js**: Employed for server-rendering and routing in the application.
 
 ## Usage
 
@@ -39,9 +31,3 @@ BookItNow is a Next.js web app offering a seamless booking experience inspired b
     ```bash
     npm run dev
     ```
-
-4. **Open your browser and navigate to `http://localhost:3000`.**
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
